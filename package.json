@@ -4,6 +4,8 @@
   "description": "AudioPlayer",
   "main": "index.js",
   "scripts": {
+    "precommit": "npm test",
+    "prepush": "npm test",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -17,6 +19,7 @@
   },
   "homepage": "https://github.com/polytech-frontend-2017/Prokhorova_Pereverzev_course_project#readme",
   "devDependencies": {
-    "husky": "^0.14.3"
+    "husky": "^0.14.3",
+    "lint-staged": "^4.2.3"
   }
 }
