@@ -1,0 +1,22 @@
+{
+  "name": "audioplayer",
+  "version": "1.0.0",
+  "description": "AudioPlayer",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/polytech-frontend-2017/Prokhorova_Pereverzev_course_project.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/polytech-frontend-2017/Prokhorova_Pereverzev_course_project/issues"
+  },
+  "homepage": "https://github.com/polytech-frontend-2017/Prokhorova_Pereverzev_course_project#readme",
+  "devDependencies": {
+    "husky": "^0.14.3"
+  }
+}
