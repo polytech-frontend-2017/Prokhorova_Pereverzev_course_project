@@ -1,28 +1,49 @@
 import React, { Component } from 'react';
+import connectDecorator from "../context/connectDecorator";
 
-export class StartMenu extends Component {
+class StartMenu extends Component {
     constructor(props) {
         super(props);
-        this.handlerCreateCompetition = this.handlerCreateCompetition.bind(this);
+        this.state={
+            size: 15.2,
+            title:'',
+            date:'',
+        };
+    }
+    handleTitleChange(e){
+        this.setState({title:e.target.value});
+    }
+    handleDateChange(e){
+        this.setState({date:e.target.value});
     }
     handlerCreateCompetition(e){
-        //console.dir(e.target.parentNode.parentNode[1].value);
-        var form=e.target.parentNode.parentNode;
-        this.props.data.addCompetition(form[0].value,form[1].value);
+        //must be ajax to server
+        e.preventDefault();
+        this.props.createCompetition(this.state.title,this.state.date);
+        console.log(this.state.title+'; '+this.state.date);
     }
     render() {
         return (
-            <div className="conteiner">
-                <form>
-                    <p>Create Competition</p>
-                    <input type="text" name="title" placeholder="Name of competition"/>
-                    <span>Date:</span>
-                    <input type="date" name="date" />
-                    <p><input type="button" onClick={this.handlerCreateCompetition} value="Create Competition"/></p>
+            <div className="container">
+                <form onSubmit={this.handlerCreateCompetition.bind(this)}>
+                    <label>Competition</label>
+                    {this.props.tournirsCount > 0 && <h3>Has {this.props.tournirsCount} tournirs</h3>}
+                    <input size={this.state.size} type="text" name="title" placeholder="Name of competition"
+                           value={this.state.title}
+                           onInput={this.handleTitleChange.bind(this)}/>
+                    <input size={this.state.size} type="date" name="date"
+                           value={this.state.date}
+                           onInput={this.handleDateChange.bind(this)}/>
+                    <input type="submit"  value="Create"/>
                 </form>
             </div>
         );
     }
 }
 
-export default StartMenu;
+export default connectDecorator(StartMenu,
+    ['createCompetition'],
+    store => ({
+        tournirsCount: store.tournirs.length
+    })
+);
