@@ -1,21 +1,32 @@
+
 .App {
   text-align: center;
+  z-index: 100;
+  position: absolute;
+  width: 100%;
+  top: 0;
+  height: 100%;
 }
-
 .App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+  /*animation: App-logo-spin infinite 12s linear;*/
+  height: 1500px;
+  width: 100px;
+  z-index: 1;
+  opacity: 0.1;
+  margin: auto;
+  display: block;
 }
 
 .App-header {
   background-color: #444444;
-  height: 50px;
-  padding: 20px;
   color: white;
+  height: 40px;
+  padding: 10px;
 }
 
 .App-title {
-  font-size: 1.5em;
+  font-size: 1em;
+  text-transform: uppercase;
 }
 
 .App-intro {
@@ -35,7 +46,7 @@
   padding:15px;
   color: #fff;
   font-family: sans-serif;
-  text-transform: uppercase
+  text-transform: uppercase;
 }
 .container input {
   font:  12pt sans-serif ;
@@ -47,7 +58,7 @@
   border: solid 1px;
 }
 .container input[type=submit] {
-  background-color: #66b95f;
+  background-color: #b90013;
   border: none;
   color: white;
   padding: 5px 10px;

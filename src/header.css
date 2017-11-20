@@ -1,0 +1,56 @@
+.selected{
+    background: var(--theme-primary-color);
+}
+.conteiner-li{
+    height: 100%;
+    float: right;
+}
+.verticalLine{
+    float:right;
+    border-left: 2px solid #727272;
+    width: 0 !important;
+    height: 100%;
+    outline: 0;
+    background: transparent;
+}
+a{
+    padding: 35px 46px;
+    display: block;
+    color: white;
+    text-decoration: none;
+    cursor:pointer;
+}
+ul{
+    height:inherit;
+    margin: 0;
+    list-style-type: none;
+}
+li{
+    float:right;
+    text-decoration: none;
+    text-transform: uppercase;
+    color: white;
+    font-size: 14px;
+    font-family: Tahoma,"Whitney SSm A", "Whitney SSm B", "Lato", "Lucida Grande", "Lucida Sans Unicode", Sans-Serif;
+    height: inherit;
+    margin:0;
+    background-color:transparent;
+}
+.divStyle{
+    color:#fff;
+    background-color:#5a5a5a;
+    display: block;
+    width: 100%;
+    height:90px;
+}
+.Applogo{
+    padding:10px;
+    height: 70px;
+    float: left;
+    display:block;
+}
+.titletext{
+    float: left;
+    font: 22pt sans-serif;
+    padding: 30px;
+}

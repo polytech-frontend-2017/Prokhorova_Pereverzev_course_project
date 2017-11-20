@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+
 export default function connectDecorator(OriginalComponent, methods = ['createCompetition'], getData) {
     class Connected extends Component {
         constructor(props, context){
@@ -16,13 +17,13 @@ export default function connectDecorator(OriginalComponent, methods = ['createCo
                 {}
             );
             this.context.store.addListener(() => this.setState({
-                storeVersion: this.state.storeVersion++
+                storeVersion: this.state.storeVersion++,
             }));
         }
         componentWillMount() {
             this.setState({
                 storeVersion: 0
-            })
+            });
         }
         render() {
             return <OriginalComponent

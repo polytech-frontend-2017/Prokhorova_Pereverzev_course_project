@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import connectDecorator from "../context/connectDecorator";
+import '../App.css';
 
-class StartMenu extends Component {
+class CreateCompMenu extends Component {
     constructor(props) {
         super(props);
         this.state={
@@ -20,30 +21,38 @@ class StartMenu extends Component {
         //must be ajax to server
         e.preventDefault();
         this.props.createCompetition(this.state.title,this.state.date);
-        console.log(this.state.title+'; '+this.state.date);
+        //this.hidden();
     }
     render() {
         return (
-            <div className="container">
-                <form onSubmit={this.handlerCreateCompetition.bind(this)}>
-                    <label>Competition</label>
-                    {this.props.tournirsCount > 0 && <h3>Has {this.props.tournirsCount} tournirs</h3>}
-                    <input size={this.state.size} type="text" name="title" placeholder="Name of competition"
-                           value={this.state.title}
-                           onInput={this.handleTitleChange.bind(this)}/>
-                    <input size={this.state.size} type="date" name="date"
-                           value={this.state.date}
-                           onInput={this.handleDateChange.bind(this)}/>
-                    <input type="submit"  value="Create"/>
-                </form>
-            </div>
-        );
-    }
+                <div>
+                    <header className="App-header">
+                        <h1 className="App-title">Менеджер Соревнований</h1>
+                    </header>
+                    <div className="container">
+                    <form onSubmit={this.handlerCreateCompetition.bind(this)}>
+                        <label>Соревнование</label>
+                        {/*this.props.tournirsCount > 0 && <h3>Has {this.props.tournirsCount} tournirs</h3>*/}
+                        <input size={this.state.size} type="text" name="title" placeholder="Наименование" required
+                               defaultValue={this.state.title}
+                               onInput={this.handleTitleChange.bind(this)}/>
+                        <input size={this.state.size} type="date" name="date" required
+                               defaultValue={this.state.date}
+                               onInput={this.handleDateChange.bind(this)}/>
+
+                            <input type="submit" value="Создать"/>
+
+                    </form>
+                    </div>
+                </div>
+            );
+        }
+
 }
 
-export default connectDecorator(StartMenu,
+export default connectDecorator(CreateCompMenu,
     ['createCompetition'],
     store => ({
-        tournirsCount: store.tournirs.length
+        tournirsCount: store.tournirs.length,
     })
 );
