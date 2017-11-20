@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
-//import logo from './logo.svg';
+/*import logo from './logo.svg';*/
 import './App.css';
-import StartMenu from './js/StartMenu.js';
+import CreateCompMenu from './js/CreateCompMenu.js';
 import Store from './js/Store.js';
+import MenuHeader from './js/MenuHeader.js';
 import Provider from './context/Provider.js';
+import ListCompetitors from './js/ListCompetitors.js';
+import ListTournirs from './js/ListTournirs';
 
 
-var script = document.createElement('script');
+let script = document.createElement('script');
 script.src = 'http://code.jquery.com/jquery-1.11.0.min.js';
 script.type = 'text/javascript';
 document.getElementsByTagName('head')[0].appendChild(script);
@@ -16,16 +19,40 @@ class App extends Component {
     constructor(){
         super();
         this.store = new Store();
+        this.state={
+            page:'CreateCompMenu',
+        };
+        this.routes = {
+            'ListCompetitors': {
+                component: ListCompetitors,
+            },
+            'ListTournirs': {
+                component: ListTournirs,
+            },
+            'CreateCompMenu': {
+                component: CreateCompMenu,
+            }
+        };
+    }
+    changeShow(num){
+        switch (num){
+            case 'Соревнующиеся': this.setState({page:'ListCompetitors'}); break;
+            case 'Турниры': this.setState({page:'ListTournirs'}); break;
+            case 'Соревнование': this.setState({page:'CreateCompMenu'}); break;
+            case 'Раунды': break;
+        }
     }
   render() {
-      /*<CompetitionChart data={getGraphData(this.props.store, this.state.currentTournamentId)}/>*/
+      let config = this.routes[this.state.page];
+      let PageComponent = config.component;
     return (
         <Provider store={this.store}>
             <div className="App">
-                <header className="App-header">
-                  <h1 className="App-title">Welcome to Competition Manager</h1>
-                </header>
-                <StartMenu ></StartMenu>
+                {/*<CreateCompMenu />*/}
+                <MenuHeader changeShow={this.changeShow.bind(this)}/>
+                <main className={'main-container'}>
+                    <PageComponent/>
+                </main>
             </div>
         </Provider>
     );
@@ -34,4 +61,5 @@ class App extends Component {
 
 export default App;
 
-/*<img src={logo} className="App-logo" alt="logo" />*/
+/*<img src={logo} className="App-logo" alt="logo" />
+<CompetitionChart data={getGraphData(this.props.store, this.state.currentTournamentId)}/>*/
