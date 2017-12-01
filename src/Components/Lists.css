@@ -1,7 +1,6 @@
 .baseDiv{
     margin:auto;
     padding:0;
-    /*width:'1500px',*/
     background-color:transparent;
     color:#000;
     display: block;
@@ -41,7 +40,6 @@
     text-align:left;
     background: #1b1e24;
     color:#D5DDE5;
-    /*border-right: 1px solid #C1C3D1;*/
 }
 .th-tablse:first-child {
     border-top-left-radius:var(--theme-primary-border-radius);
@@ -88,5 +86,4 @@
     vertical-align:middle;
     font-weight:300;
     font-size:16px;
-    /*border-right: 1px solid #C1C3D1;*/
 }

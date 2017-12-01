@@ -114,9 +114,6 @@ export class Store {
     addGroup(){
 
     }
-    /*
-    addCompetitor(Name,Surname,Patronymic, Age, Qiu) {
-        this.competitors.push();}*/
 
 }
 

@@ -21,7 +21,6 @@ class CreateCompMenu extends Component {
         //must be ajax to server
         e.preventDefault();
         this.props.createCompetition(this.state.title,this.state.date);
-        //this.hidden();
     }
     render() {
         return (
