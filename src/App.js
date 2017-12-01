@@ -53,6 +53,3 @@ class App extends Component {
 }
 
 export default App;
-
-/*<img src={logo} className="App-logo" alt="logo" />
-<CompetitionChart data={getGraphData(this.props.store, this.state.currentTournamentId)}/>*/
