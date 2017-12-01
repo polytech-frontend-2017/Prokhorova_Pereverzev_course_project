@@ -4,13 +4,6 @@ import './MenuHeader.css';
 import connectDecorator from "../context/connectDecorator";
 
 function classNames(conditions) {
-    /*
-     {
-       'header-li': true,
-       'selected': false,
-       'other': true
-     } => ['header-li', 'other']
-     */
     const classNames = Object.keys(conditions); // ['header-li', 'selected', 'other']
     const enabledClassNames = classNames.filter(className => conditions[className]); // ['header-li', 'other']
     return enabledClassNames.join(' ') // 'header-li other'
