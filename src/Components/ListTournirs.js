@@ -23,15 +23,6 @@ class ListTournirs extends Component {
         this.textInput.focus();
     }
     changeInput(name,event){
-        /*
-         { name: 1 }
-         ===
-         { "name": 1 }
-
-         { [name]: 1 }
-         ===
-         eval('{ '+name+': 1 }')
-         */
         this.setState({
             [name]:event.target.value,
         })
