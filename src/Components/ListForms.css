@@ -25,7 +25,7 @@
     border-radius: var(--theme-primary-border-radius);
     text-align: center;
 }
-.formInput h1{
+.formInput-h1{
     font-size: 20px;
     font-weight: 400;
     font-style: normal;
@@ -45,7 +45,7 @@
     color: coral;
     padding: 5px 0px;
 }
-.group_input label {
+.group_input-label {
     font-size: 12px;
     float: left;
     width: 50px;
@@ -53,7 +53,7 @@
     margin-bottom: 5px;
     text-align: end;
 }
-.group_input input {
+.group_input-input {
     outline: 0;
     background: #dfdfdf;
     width: 100%;
@@ -68,16 +68,16 @@
 .short{
     width: 200px;
 }
-.short input{
+.short-input{
     width: 110px;
 }
 .short-tournir{
     width: 650px;
 }
-.short-tournir input{
+.short-tournir-input{
     width: 200px;
 }
-.submit-button input{
+.submit-button-input{
     width: 100%;
     float: left;
     position: relative;

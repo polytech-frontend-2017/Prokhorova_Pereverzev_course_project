@@ -93,9 +93,7 @@ export class Store {
                     tournament.qiuRange.max > Qiu) {
                     tournament.competitors.push(Competitor);
                     if (tournament.competitors.length%2===1)
-                    {
                         tournament.tours.groups.push({first:'Someone', second:'Someone'})
-                    }
                 }
             })*/
         }

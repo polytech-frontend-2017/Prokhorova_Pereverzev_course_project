@@ -31,17 +31,17 @@ class CreateCompMenu extends Component {
                     </header>
                     <div className="container">
                     <form onSubmit={this.handlerCreateCompetition.bind(this)}>
-                        <label>Соревнование</label>
+                        <label className='container-label'>Соревнование</label>
                         {/*this.props.tournirsCount > 0 && <h3>Has {this.props.tournirsCount} tournirs</h3>*/}
-                        <input size={this.state.size} type="text" name="title" placeholder="Наименование" required
+                        <input className='container-input' size={this.state.size}
+                               type="text" name="title" placeholder="Наименование" required
                                defaultValue={this.state.title}
                                onInput={this.handleTitleChange.bind(this)}/>
-                        <input size={this.state.size} type="date" name="date" required
+                        <input className='container-input' size={this.state.size}
+                               type="date" name="date" required
                                defaultValue={this.state.date}
                                onInput={this.handleDateChange.bind(this)}/>
-
-                            <input type="submit" value="Создать"/>
-
+                        <button className='container-input submit-btn' type={"submit"} >Создать</button>
                     </form>
                     </div>
                 </div>

@@ -9,10 +9,6 @@ export default function connectDecorator(OriginalComponent, methods = ['createCo
                 (acc, methodName) => {
                     acc[methodName] = this.context.store[methodName].bind(this.context.store);
                     return acc;
-                    // return {
-                    //     ...acc,
-                    //     [methodName]: smth
-                    // }
                 },
                 {}
             );

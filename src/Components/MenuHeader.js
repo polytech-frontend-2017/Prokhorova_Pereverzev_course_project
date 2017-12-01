@@ -1,8 +1,20 @@
 import React,{ Component } from 'react';
 import logo from '../logoAikido.svg';
-import '../header.css';
+import './MenuHeader.css';
 import connectDecorator from "../context/connectDecorator";
-import FormAddTournir from "./FormAddTournir.js";
+
+function classNames(conditions) {
+    /*
+     {
+       'header-li': true,
+       'selected': false,
+       'other': true
+     } => ['header-li', 'other']
+     */
+    const classNames = Object.keys(conditions); // ['header-li', 'selected', 'other']
+    const enabledClassNames = classNames.filter(className => conditions[className]); // ['header-li', 'other']
+    return enabledClassNames.join(' ') // 'header-li other'
+}
 
 class MenuHeader extends Component {
     constructor(props) {
@@ -28,15 +40,17 @@ class MenuHeader extends Component {
             <div className={'divStyle'}>
                 <img src={logo} className={'Applogo'} alt="logo" />
                 <div className = {'titletext'}>{this.props.competitionName+' /'+this.props.competitionDate}</div>
-                <ul>
-                    { this.menu.map((m,i) => {
-
+                <ul className = {'header-ul'}>
+                    { this.menu.map((menuItem) => {
                         return (
-                            <div key={i} className={'conteiner-li'}>
+                            <div className={'container-li'}>
                             <div className={'verticalLine'}/>
-                            <li className={(m.name===this.state.activeMenu)?'selected':null}
-                                onClick={this.ShowOrHideForm.bind(this,m.name)}>
-                                <a>{m.name}</a></li>
+                                <li className={classNames({
+                                    'selected': menuItem.name === this.state.activeMenu,
+                                    'header-li': true,
+                            })}
+                                onClick={this.ShowOrHideForm.bind(this,menuItem.name)}>
+                                <a className={'header-a'}>{menuItem.name}</a></li>
                             </div>
                         );
                     })}

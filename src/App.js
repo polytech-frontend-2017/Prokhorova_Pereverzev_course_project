@@ -1,18 +1,19 @@
 import React, { Component } from 'react';
-/*import logo from './logo.svg';*/
+
 import './App.css';
-import CreateCompMenu from './js/CreateCompMenu.js';
-import Store from './js/Store.js';
-import MenuHeader from './js/MenuHeader.js';
+import CreateCompMenu from './Components/CreateCompMenu.js';
+import Store from './Components/Store.js';
+import MenuHeader from './Components/MenuHeader.js';
 import Provider from './context/Provider.js';
-import ListCompetitors from './js/ListCompetitors.js';
-import ListTournirs from './js/ListTournirs';
+import ListCompetitors from './Components/ListCompetitors.js';
+import ListTournirs from './Components/ListTournirs';
 
-
+/*
+import logo from './logo.svg';
 let script = document.createElement('script');
-script.src = 'http://code.jquery.com/jquery-1.11.0.min.js';
+script.src = 'http://code.jquery.com/jquery-1.11.0.min.Components';
 script.type = 'text/javascript';
-document.getElementsByTagName('head')[0].appendChild(script);
+document.getElementsByTagName('head')[0].appendChild(script);*/
 
 //var store = new Store();
 class App extends Component {
@@ -31,7 +32,7 @@ class App extends Component {
             },
             'CreateCompMenu': {
                 component: CreateCompMenu,
-            }
+            },
         };
     }
     changeShow(num){
@@ -43,12 +44,11 @@ class App extends Component {
         }
     }
   render() {
-      let config = this.routes[this.state.page];
-      let PageComponent = config.component;
+        let config = this.routes[this.state.page];
+        let PageComponent = config.component;
     return (
         <Provider store={this.store}>
             <div className="App">
-                {/*<CreateCompMenu />*/}
                 <MenuHeader changeShow={this.changeShow.bind(this)}/>
                 <main className={'main-container'}>
                     <PageComponent/>

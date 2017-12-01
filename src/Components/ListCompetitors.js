@@ -1,7 +1,7 @@
 import React,{ Component } from 'react';
 import connectDecorator from "../context/connectDecorator";
-import '../Lists.css';
-import '../form.css';
+import './Lists.css';
+import './ListForms.css';
 
 class ListCompetitors extends Component {
     constructor(props){
@@ -16,34 +16,15 @@ class ListCompetitors extends Component {
         };
         this.textInput = null;
         this.focus = this.focus.bind(this);
-        this.changeSurname=this.changeSurname.bind(this);
-        this.changeName=this.changeName.bind(this);
-        this.changePatronomics=this.changePatronomics.bind(this);
-        this.changeAge=this.changeAge.bind(this);
-        this.changeQiu=this.changeQiu.bind(this);
-        this.changeMass=this.changeMass.bind(this);
         this.handleAddCompetitor=this.handleAddCompetitor.bind(this);
     }
     focus() {
         this.textInput.focus();
     }
-    changeSurname(event){
-        this.setState({surname:event.target.value})
-    }
-    changeName(event){
-        this.setState({name:event.target.value})
-    }
-    changePatronomics(event){
-        this.setState({patronomics:event.target.value})
-    }
-    changeAge(event){
-        this.setState({age:event.target.value})
-    }
-    changeQiu(event){
-        this.setState({qiu:event.target.value})
-    }
-    changeMass(event){
-        this.setState({mass:event.target.value})
+    changeInput(name,event){
+        this.setState({
+            [name]:event.target.value,
+        })
     }
     handleAddCompetitor(event){
         event.preventDefault();
@@ -68,62 +49,68 @@ class ListCompetitors extends Component {
         this.props.destroyCompetitor(id);
     }
     render(){
-
         return(
             <div className={'baseDiv'}>
                 <article className={"add-form"}>
                     <form className={'formInput'} onSubmit={this.handleAddCompetitor}>
-                        <h1>
+                        <h1 className={'formInput-h1'}>
                             Добавить участника
                         </h1>
                         <div className={'left-input'}>
                             <div className={'group_input'}>
-                                <input type={'text'} value={this.state.surname}
-                                       onInput={this.changeSurname} required
+                                <input className={'group_input-input'} type={'text'} value={this.state.surname}
+                                       onInput={this.changeInput.bind(this,'surname')} required
                                        placeholder={'Фамилия'}
                                        ref={(input) => { this.textInput = input; }}/></div>
                             <div className={'group_input'}>
-                                <input type={'text'} value={this.state.name}
-                                       onInput={this.changeName} required
+                                <input className={'group_input-input'} type={'text'} value={this.state.name}
+                                       onInput={this.changeInput.bind(this,'name')} required
                                        placeholder={'Имя'}/></div>
                             <div className={'group_input'}>
-                                <input type={'text'} value={this.state.patronomics}
-                                       onInput={this.changePatronomics} required
+                                <input className={'group_input-input'} type={'text'} value={this.state.patronomics}
+                                       onInput={this.changeInput.bind(this,'patronomics')} required
                                        placeholder={'Отчество'}/></div>
                         </div>
                         <div className={'right-input'}>
                             <div className={'group_input short'}>
-                                <label>Ранг:</label>
-                                    <input type={'number'} value={this.state.qiu} min={-10} max={10}
-                                           onInput={this.changeQiu} required/></div>
+                                <label className={'group_input-label'}>Ранг:</label>
+                                <input className={'group_input-input short-input'} type={'number'} value={this.state.qiu} min={-10} max={10}
+                                       onInput={this.changeInput.bind(this,'qiu')} required/></div>
                             <div className={'group_input short'}>
-                                <label>Возраст:</label>
-                                <input type={'number'} value={this.state.age} min={1} max={150}
-                                       onInput={this.changeAge} required/></div>
+                                <label className={'group_input-label'}>Возраст:</label>
+                                <input className={'group_input-input short-input'} type={'number'} value={this.state.age} min={1} max={150}
+                                       onInput={this.changeInput.bind(this,'age')} required/></div>
                             <div className={'group_input short'}>
-                                <label>Вес:</label>
-                                <input type={'number'} value={this.state.mass} min={1} max={150}
-                                       onInput={this.changeMass} required/></div>
+                                <label className={'group_input-label'}>Вес:</label>
+                                <input className={'group_input-input short-input'} type={'number'} value={this.state.mass} min={1} max={150}
+                                       onInput={this.changeInput.bind(this,'mass')} required/></div>
                         </div>
                             <br/>
                         <div className="submit-button">
-                        <input type={'submit'} value={'Добавить'}/></div>
+                        <input className={'submit-button-input'} type={'submit'} value={'Добавить'}/></div>
                     </form>
                 </article>
-                <div className="table-title"><h3>Соревнующиеся</h3></div>
+                <div className="table-title"><h3 className={'h3-title'}>Соревнующиеся</h3></div>
                 <table className={'table-fill'}>
                     <tbody>
-                        <tr><th>№</th><th>Фамилия</th><th>Имя</th><th>Отчество</th><th>Возраст</th><th>Ранг</th><th>Вес</th><th/></tr>
+                        <tr className={'tr-table'}><th className={'th-tablse'}>№</th>
+                            <th className={'th-tablse'}>Фамилия</th>
+                            <th className={'th-tablse'}>Имя</th>
+                            <th className={'th-tablse'}>Отчество</th>
+                            <th className={'th-tablse'}>Возраст</th>
+                            <th className={'th-tablse'}>Ранг</th>
+                            <th className={'th-tablse'}>Вес</th>
+                            <th className={'th-tablse'}/></tr>
                         {this.props.competitors.map((competitor,i)=>
-                            <tr key={i}>
-                                <td>{i}</td>
-                                <td>{competitor.surname}</td>
-                                <td>{competitor.name}</td>
-                                <td>{competitor.patronomics}</td>
-                                <td>{competitor.age}</td>
-                                <td>{competitor.qiu}</td>
-                                <td>{competitor.mass} </td>
-                                <td>
+                            <tr className={'tr-table'}>
+                                <td className={'td-table'}>{i}</td>
+                                <td className={'td-table'}>{competitor.name}</td>
+                                <td className={'td-table'}>{competitor.patronomics}</td>
+                                <td className={'td-table'}>{competitor.surname}</td>
+                                <td className={'td-table'}>{competitor.age}</td>
+                                <td className={'td-table'}>{competitor.qiu}</td>
+                                <td className={'td-table'}>{competitor.mass} </td>
+                                <td className={'td-table'}>
                                     <svg className={'btnDestroy'} onClick={this.handleDestroy.bind(this,competitor.id)}
                                          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 138.03 138.03">
                                         <path d="M138.92,121.51l-114-114C14-3.42-3,13.55,7.95,24.49l114,114c10.94,10.94,27.91-6,17-17Z"
@@ -138,7 +125,6 @@ class ListCompetitors extends Component {
 
         );
     }
-
 }
 
 export default connectDecorator(ListCompetitors,
