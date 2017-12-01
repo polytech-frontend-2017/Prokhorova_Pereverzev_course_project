@@ -8,14 +8,7 @@ import Provider from './context/Provider.js';
 import ListCompetitors from './Components/ListCompetitors.js';
 import ListTournirs from './Components/ListTournirs';
 
-/*
-import logo from './logo.svg';
-let script = document.createElement('script');
-script.src = 'http://code.jquery.com/jquery-1.11.0.min.Components';
-script.type = 'text/javascript';
-document.getElementsByTagName('head')[0].appendChild(script);*/
 
-//var store = new Store();
 class App extends Component {
     constructor(){
         super();
