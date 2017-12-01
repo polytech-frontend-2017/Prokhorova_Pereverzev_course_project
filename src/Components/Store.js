@@ -43,7 +43,6 @@ export class Store {
                 mass:80,
                 id: this.idCompetitor++,}
         ];
-        //нужен handler для отслеживания текущего!!!
     }
     createCompetition(Title, Date){
         this.competition = {title:Title, date:Date};
