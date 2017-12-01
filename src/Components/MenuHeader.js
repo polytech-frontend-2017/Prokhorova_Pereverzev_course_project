@@ -4,9 +4,9 @@ import './MenuHeader.css';
 import connectDecorator from "../context/connectDecorator";
 
 function classNames(conditions) {
-    const classNames = Object.keys(conditions); // ['header-li', 'selected', 'other']
-    const enabledClassNames = classNames.filter(className => conditions[className]); // ['header-li', 'other']
-    return enabledClassNames.join(' ') // 'header-li other'
+    const classNames = Object.keys(conditions);                                         // ['header-li', 'selected', 'other']
+    const enabledClassNames = classNames.filter(className => conditions[className]);    // ['header-li', 'other']
+    return enabledClassNames.join(' ')                                                  // 'header-li other'
 }
 
 class MenuHeader extends Component {
@@ -53,7 +53,6 @@ class MenuHeader extends Component {
         )
     }
 }
-
 export default connectDecorator(MenuHeader,
     [],
     store => ({
