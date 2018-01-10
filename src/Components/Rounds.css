@@ -27,4 +27,5 @@
 .Graph{
     float: left;
     display: inline-block;
+    width:0px;
 }

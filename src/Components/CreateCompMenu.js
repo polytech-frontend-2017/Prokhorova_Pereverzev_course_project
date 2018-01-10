@@ -24,7 +24,7 @@ class CreateCompMenu extends Component {
     }
     render() {
         return (
-                <div>
+                <div className={"create-comp-menu"}>
                     <header className="App-header">
                         <h1 className="App-title">Менеджер Соревнований</h1>
                     </header>

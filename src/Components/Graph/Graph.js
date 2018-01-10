@@ -66,6 +66,7 @@ class Graph extends Component {
         this.makeGraph=this.makeGraph.bind(this);
         this.toggleMenu=this.toggleMenu.bind(this);
         this.menuSelect=this.menuSelect.bind(this);
+        this.HideMenu=this.HideMenu.bind(this);
         this.updateD3(props);
         this.createPairs();
     }
@@ -82,30 +83,33 @@ class Graph extends Component {
                 numberName:NumberName,
             });
         this.setState({
-            showMenu:!this.state.showMenu,
+            showMenu:true,
             xMenu:x,
             yMenu:y,
         });
     }
+    HideMenu(){
+        this.setState({
+            showMenu:false,
+        });
+    }
     menuSelect(selectValue){
-        this.toggleMenu(0,0,"",null);
+        this.HideMenu();
         console.log(this.state.numberName);
         console.log(selectValue);
         console.log(this.state.selectedNodeId);
         let nod = this.nodes.find(node=>node.data.name === this.state.selectedNodeId);
         let pair = this.currentPairs.find(pair=>pair.id === this.state.selectedNodeId);
-        console.log(nod);
         switch(this.state.numberName){
             case 1:
-                if (selectValue.value.id!==pair.name2.id)
+                if (selectValue.value && selectValue.value.id!==pair.name2.id)
                     pair.name1=selectValue.value;
                 break;
             case 2:
-                if (pair.name1.id!==selectValue.value.id)
+                if (selectValue.value && pair.name1.id!==selectValue.value.id)
                     pair.name2=selectValue.value;
         }
         nod.data.name = this.state.selectedNodeId;
-        console.log(pair);
     }
 
     createPairs(){
@@ -137,7 +141,8 @@ class Graph extends Component {
         this.d3tree.size([props.height, props.width]);
         let treeData = this.d3tree(this.root);
         this.nodes = treeData.descendants();
-        this.links = treeData.descendants().slice(1);
+        this.links = treeData.descendants().slice(1)
+
     }
     makeGraph(node,index){
         let Pair = this.currentPairs.find(pair=>pair.id===node.data.name);
@@ -161,7 +166,7 @@ class Graph extends Component {
             index:index,
             pair:Pair,
             key: "graph-"+node.data.name,
-            toggleMenu:this.toggleMenu,
+            showMenu:this.toggleMenu,
         };
         return (
             <Node {...props}/>
@@ -186,16 +191,16 @@ class Graph extends Component {
                 <g className="graph-pairs">
                     {this.links.map(this.linkHorizontal)}
                     {this.nodes.map(this.makeGraph)}
-                </g>
-                {
-                    this.state.showMenu &&
+                    {this.state.showMenu &&
                     <MenuCompetitors
                         currCompetitors={this.props.currentCompetitors}
                         menuSelect = {this.menuSelect}
+                        hideMenu={this.HideMenu}
                         x={this.state.xMenu}
                         y={this.state.yMenu}
-                    />
-                }
+                    />}
+                </g>
+
             </g>
         );
     }

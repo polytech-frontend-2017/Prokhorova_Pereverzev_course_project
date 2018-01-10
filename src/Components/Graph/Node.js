@@ -43,9 +43,17 @@ class Node extends Component {
     }
     showChoose(num,event){
         event.preventDefault();
-        this.props.toggleMenu(
+        let y;
+        switch (num){
+            case 1:
+                y = this.props.y+10;
+                break;
+            default:
+                y = this.props.y+this.props.height/2;
+        }
+        this.props.showMenu(
             this.props.x,
-            this.props.y,
+            y,
             this.props.id,
             num,
             );

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
+import "./MenuCompetitors.css"
 import PropTypes from 'prop-types';
 
 class MenuCompetitors extends Component {
@@ -45,26 +46,33 @@ class MenuCompetitors extends Component {
         let options = this.props.currCompetitors.map(c=>c={label:c.name+" "+c.surname,value:c});
         return(
             <g>
-                <foreignObject x={this.props.x} y={this.props.y} width="300" height="300">
-                    <Select
-                        size={"210px"}
-                        id="name-select"
-                        ref={(ref) => { this.select = ref; }}
-                        onBlurResetsInput={false}
-                        onSelectResetsInput={false}
-                        autoFocus
-                        options={options}
-                        clearable={this.state.clearable}
-                        name="selected-name"
-                        disabled={this.state.disabled}
-                        value={this.state.selectValue}
-                        onChange={this.updateValue}
-                        rtl={this.state.rtl}
-                        searchable={this.state.searchable}
-                    />
-                    <button style={{ marginTop: '15px' }} type="button" onClick={this.clearValue}>Clear Value</button>
-
-                    <button onClick={()=>this.props.menuSelect(this.state.selectValue)}>Ok</button>
+                <foreignObject x={this.props.x} y={this.props.y} width="210" height="100" >
+                    <div className={"select-menu"}>
+                        <Select
+                            className={"Select"}
+                            size={"210px"}
+                            id="name-select"
+                            ref={(ref) => { this.select = ref; }}
+                            onBlurResetsInput={false}
+                            onSelectResetsInput={false}
+                            autoFocus
+                            options={options}
+                            clearable={this.state.clearable}
+                            name="selected-name"
+                            disabled={this.state.disabled}
+                            value={this.state.selectValue}
+                            onChange={this.updateValue}
+                            rtl={this.state.rtl}
+                            searchable={this.state.searchable}
+                            width={300}
+                            onInputKeyDown={(e)=>{
+                                if  (e.which === 13 && this.state.selectValue)
+                                    this.props.menuSelect(this.state.selectValue);
+                                else
+                                    this.props.hideMenu();
+                            }}
+                        />
+                    </div>
                 </foreignObject>
             </g>
         );
