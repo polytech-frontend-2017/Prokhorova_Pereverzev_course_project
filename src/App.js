@@ -7,6 +7,7 @@ import MenuHeader from './Components/MenuHeader.js';
 import Provider from './context/Provider.js';
 import ListCompetitors from './Components/ListCompetitors.js';
 import ListTournirs from './Components/ListTournirs';
+import Rounds from './Components/Rounds';
 
 
 class App extends Component {
@@ -26,6 +27,9 @@ class App extends Component {
             'CreateCompMenu': {
                 component: CreateCompMenu,
             },
+            'Rounds': {
+                component: Rounds,
+            },
         };
     }
     changeShow(num){
@@ -33,7 +37,7 @@ class App extends Component {
             case 'Соревнующиеся': this.setState({page:'ListCompetitors'}); break;
             case 'Турниры': this.setState({page:'ListTournirs'}); break;
             case 'Соревнование': this.setState({page:'CreateCompMenu'}); break;
-            case 'Раунды': break;
+            case 'Раунды': this.setState({page:'Rounds'}); break;
         }
     }
   render() {

@@ -102,7 +102,7 @@ class ListCompetitors extends Component {
                             <th className={'th-tablse'}>Вес</th>
                             <th className={'th-tablse'}/></tr>
                         {this.props.competitors.map((competitor,i)=>
-                            <tr className={'tr-table'}>
+                            <tr className={'tr-table'} key={i}>
                                 <td className={'td-table'}>{i}</td>
                                 <td className={'td-table'}>{competitor.name}</td>
                                 <td className={'td-table'}>{competitor.patronomics}</td>

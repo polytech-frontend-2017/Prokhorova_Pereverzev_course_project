@@ -100,7 +100,7 @@ class ListTournirs extends Component {
                         <th className={'th-tablse'}>Вес</th>
                         <th className={'th-tablse'}/></tr>
                     {this.props.tournirs.map((tournir,i)=>
-                        <tr className={'tr-table'}>
+                        <tr className={'tr-table'} key={i}>
                             <td className={'td-table'}>{i}</td>
                             <td className={'td-table'}>{tournir.ageRange.min+' - '+tournir.ageRange.max}</td>
                             <td className={'td-table'}>{tournir.qiuRange.min+' - '+tournir.qiuRange.max}</td>

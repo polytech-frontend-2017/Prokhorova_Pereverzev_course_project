@@ -34,9 +34,9 @@ class MenuHeader extends Component {
                 <img src={logo} className={'Applogo'} alt="logo" />
                 <div className = {'titletext'}>{this.props.competitionName+' /'+this.props.competitionDate}</div>
                 <ul className = {'header-ul'}>
-                    { this.menu.map((menuItem) => {
+                    { this.menu.map((menuItem,i) => {
                         return (
-                            <div className={'container-li'}>
+                            <div className={'container-li'} key={i}>
                             <div className={'verticalLine'}/>
                                 <li className={classNames({
                                     'selected': menuItem.name === this.state.activeMenu,
