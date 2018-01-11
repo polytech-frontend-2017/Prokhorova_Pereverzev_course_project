@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import * as d3 from 'd3';
+import connectDecorator from "../../context/connectDecorator";
 import Node from "./Node"
 import MenuCompetitors from "./MenuCompetitors"
 import "./Graph.css"
@@ -43,6 +44,7 @@ function createEmptyDataTree(levels,parent,levelBuild) {
         return levelTree;
     }
 }
+
 class Graph extends Component {
     constructor(props) {
         super(props);
@@ -62,19 +64,38 @@ class Graph extends Component {
         this.createDataNodes = this.createDataNodes.bind(this);
         this.createPairs=this.createPairs.bind(this);
         this.updateD3=this.updateD3.bind(this);
+        this.updatePairs=this.updatePairs.bind(this);
         this.linkHorizontal=this.linkHorizontal.bind(this);
         this.makeGraph=this.makeGraph.bind(this);
         this.toggleMenu=this.toggleMenu.bind(this);
         this.menuSelect=this.menuSelect.bind(this);
         this.HideMenu=this.HideMenu.bind(this);
         this.updateD3(props);
-        this.createPairs();
+    }
+    createDataNodes(props){
+        this.DataNodes=createEmptyDataTree(props.deepLevel,null,0);
     }
     componentWillReceiveProps(newProps) {
         this.updateD3(newProps);
     }
-    createDataNodes(props){
-        this.DataNodes=createEmptyDataTree(props.deepLevel,null,0);
+    updateD3(props) {
+        if (props.deepLevel===0) this.links =[];
+        this.createDataNodes(props);
+        this.root =d3.hierarchy(this.DataNodes[0], function(d) { return d.children; });
+        this.root.x0 = props.height / 2;
+        this.root.y0 = 0;
+        this.d3tree.size([props.height, props.width]);
+        let treeData = this.d3tree(this.root);
+        this.nodes = treeData.descendants();
+        this.links = treeData.descendants().slice(1);
+        this.updatePairs(props);
+    }
+    updatePairs(props) {
+        if (props.activeTournir.groups.filter(pair=>pair.depth===props.deepLevel).length === 0)
+            this.createPairs(props);
+        else{
+            this.currentPairs=props.activeTournir.groups;
+        }
     }
     toggleMenu(x,y,SelectedNodeId,NumberName){
         if(SelectedNodeId!=="")
@@ -95,9 +116,6 @@ class Graph extends Component {
     }
     menuSelect(selectValue){
         this.HideMenu();
-        console.log(this.state.numberName);
-        console.log(selectValue);
-        console.log(this.state.selectedNodeId);
         let nod = this.nodes.find(node=>node.data.name === this.state.selectedNodeId);
         let pair = this.currentPairs.find(pair=>pair.id === this.state.selectedNodeId);
         switch(this.state.numberName){
@@ -109,53 +127,58 @@ class Graph extends Component {
                 if (selectValue.value && pair.name1.id!==selectValue.value.id)
                     pair.name2=selectValue.value;
         }
+        /** ...change pair */
+        this.props.destroyGroup(pair.id);
+        this.props.addGroup(pair);
         nod.data.name = this.state.selectedNodeId;
     }
-
-    createPairs(){
-        if (this.props.currentCompetitors.length===0) return [];
+    createPairs(props){
+        if (props.currentCompetitors.length===0) return [];
+        props.destroyAllGroups();
         let arrPairs=[];
-        let arrIdPairs = this.nodes.filter(node=>node.depth===this.props.deepLevel);
-        for(let i=0, ind=0;i<this.props.currentCompetitors.length;i+=2,ind++)
+        let arrIdPairs = this.nodes.filter(node=>node.depth===props.deepLevel);
+        for(let i=0, ind=0;i<props.currentCompetitors.length;i+=2,ind++)
         {
-            let pair = {
-                name1:this.props.currentCompetitors[i],
-                name2:this.props.currentCompetitors[i+1],
+            console.log(ind);
+            console.log(arrIdPairs[ind]);
+            let pair ={
+                name1:props.currentCompetitors[i],
+                name2:props.currentCompetitors[i+1],
                 win1:0,
                 win2:0,
-                depth: this.props.deepLevel,
+                depth: props.deepLevel,
                 id:arrIdPairs[ind].data.name,
             };
             arrPairs.push(pair);
         }
-        if (this.props.currentCompetitors.length%2!==0)
+        if (props.currentCompetitors.length%2!==0)
             arrPairs[arrPairs.length-1].name2="no";
+        arrPairs.forEach(pair=>this.props.addGroup(pair));
         this.currentPairs=arrPairs;
     }
-    updateD3(props) {
-        if (props.deepLevel===0) this.links =[];
-        this.createDataNodes(props);
-        this.root =d3.hierarchy(this.DataNodes[0], function(d) { return d.children; });
-        this.root.x0 = props.height / 2;
-        this.root.y0 = 0;
-        this.d3tree.size([props.height, props.width]);
-        let treeData = this.d3tree(this.root);
-        this.nodes = treeData.descendants();
-        this.links = treeData.descendants().slice(1)
-
+    createEmptyCompetitor(){
+        return{
+            surname:'no',
+            name:'',
+            patronomics:'',
+            age:0,
+            qiu:10,
+            mass:0,
+        }
     }
     makeGraph(node,index){
         let Pair = this.currentPairs.find(pair=>pair.id===node.data.name);
         if (Pair===undefined) {
             Pair = {
-                name1: {name:"",surname:"no"},
-                name2: {name:"",surname:"no"},
+                name1: this.createEmptyCompetitor(),
+                name2: this.createEmptyCompetitor(),
                 win1: 0,
                 win2: 0,
                 depth: node.depth,
                 id: node.data.name,
             };
             this.currentPairs.push(Pair);
+            this.props.addGroup(Pair);
         }
         let props = {
             id: node.data.name,
@@ -184,6 +207,18 @@ class Graph extends Component {
             <path className="link" d={d} key={link.data.name} />
         )
     }
+    /*componentWillMount(){
+        if (this.props.deepLevel===0) this.links =[];
+        this.createDataNodes(this.props);
+        this.root =d3.hierarchy(this.DataNodes[0], function(d) { return d.children; });
+        this.root.x0 = this.props.height / 2;
+        this.root.y0 = 0;
+        this.d3tree.size([this.props.height, this.props.width]);
+        let treeData = this.d3tree(this.root);
+        this.nodes = treeData.descendants();
+        this.links = treeData.descendants().slice(1);
+        this.updatePairs();
+    }*/
     render() {
         const translate = "translate("+this.props.x+50+","+this.props.y+")";
         return (
@@ -206,5 +241,9 @@ class Graph extends Component {
     }
 }
 
-export default Graph;
+
+export default connectDecorator(Graph,
+    ['addGroup','destroyGroup','destroyAllGroups'],
+    store => ({})
+);
 

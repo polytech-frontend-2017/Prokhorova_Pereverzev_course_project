@@ -5,7 +5,7 @@ import './ListForms.css';
 
 class ListCompetitors extends Component {
     constructor(props){
-        super();
+        super(props);
         this.state={
             surname:'',
             name:'',
@@ -17,6 +17,8 @@ class ListCompetitors extends Component {
         this.textInput = null;
         this.focus = this.focus.bind(this);
         this.handleAddCompetitor=this.handleAddCompetitor.bind(this);
+        this.handleDestroy=this.handleDestroy.bind(this);
+        this.changeInput=this.changeInput.bind(this);
     }
     focus() {
         this.textInput.focus();

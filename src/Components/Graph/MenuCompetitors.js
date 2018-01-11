@@ -68,7 +68,7 @@ class MenuCompetitors extends Component {
                             onInputKeyDown={(e)=>{
                                 if  (e.which === 13 && this.state.selectValue)
                                     this.props.menuSelect(this.state.selectValue);
-                                else
+                                else if (e.which ===27)
                                     this.props.hideMenu();
                             }}
                         />

@@ -15,10 +15,9 @@ class Rounds extends Component {
             currentTournirId:this.props.tournirs[0].id,
             currentCompetitors:this.filterCompetitors(this.props.tournirs[0]),
         };
-        if (this.state.currentCompetitors.length!==0)
-            this.levels = Math.ceil(Math.log2(Math.ceil(this.state.currentCompetitors.length/2)));
-        else
-            this.levels =0;
+
+        (this.state.currentCompetitors.length!==0)?
+            this.levels = Math.ceil(Math.log2(Math.ceil(this.state.currentCompetitors.length/2))):this.levels =0;
     }
     countDeepLevelTree(currentCompetitors){
         if (currentCompetitors.length!==0)
@@ -28,10 +27,12 @@ class Rounds extends Component {
         let currentTournir = this.props.tournirs.find(tournir=> tournir.id === Number(event.target.value));
         let currCompetitors=this.filterCompetitors(currentTournir);
         this.countDeepLevelTree(currCompetitors);
+
         this.setState({
             currentCompetitors:currCompetitors,
             currentTournirId:currentTournir.id,
         });
+        this.props.setActiveTournir(currentTournir);
     }
     filterCompetitors(currentTournir){
         return this.props.competitors.filter(competitor=>
@@ -42,15 +43,10 @@ class Rounds extends Component {
         );
     }
     componentWillMount(){
-        /*let arr=this.filterCompetitors(this.props.tournirs[0]);
-        this.setState({
-            currentCompetitors:arr,
-        });*/
+        this.props.setActiveTournir(this.props.tournirs[0]);
     }
-    componentWillUpdate(){}
-
     render(){
-        let widthGraph = this.levels*300,
+        const widthGraph = this.levels*300,
             heightGraph =  2**this.levels * 150;
         return(
             <div className={'rounds-main'}>
@@ -75,10 +71,11 @@ class Rounds extends Component {
                     </div>
                     <button onClick={this.createPairs}>Начать соревнование</button>
                 </div>
-                <div ref={ref => this.ref = ref} className={'Graph'}>
+                <div ref={ref => this.ref = ref} className={'Graph'} >
 
                     <svg width={widthGraph+300} height={heightGraph+100}>
                         {<Graph
+                            activeTournir={this.props.tournirs[this.state.currentTournirId]}
                             currentCompetitors = {this.state.currentCompetitors}
                             x={0}
                             y={0}
@@ -92,21 +89,13 @@ class Rounds extends Component {
             </div>
         )
     }
-
-    componentDidMount(){
-        /*enter()*/
-    }
-    componentDidUpdate(prevProps, prevState){
-        /*update()*/
-    }
-
 }
 
 export default connectDecorator(Rounds,
-    ['addTournir','destroyTournir'],
+    ['setActiveTournir'],
     store => ({
         tournirs: store.tournirs,
         competitors: store.competitors,
-
+        activeTournir: store.activeTournir,
     })
 );

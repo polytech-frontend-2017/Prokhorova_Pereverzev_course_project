@@ -19,7 +19,6 @@ class Node extends Component {
         this.updatePair(props);
     }
     updatePair(props){
-        console.log(props.pair);
         let Name_1="", Name_2="";
         if(props.pair.name1 && props.pair.name2) {
             props.pair.name1.name ? Name_1 = props.pair.name1.name.substr(0, 1) + "." : "";

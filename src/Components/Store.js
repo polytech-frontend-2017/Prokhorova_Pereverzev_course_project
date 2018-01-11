@@ -19,21 +19,14 @@ export class Store {
             ageRange: {min:5,max:100},
             qiuRange: {min:10,max:6},
             massRange:{min:10,max:60},
-            tours: [
-                {
-                    id:1,
-                    groups:[]
-                }],
-            competitors: [],},
+            groups:[],
+            competitors: [],
+            },
             {id: this.itTournir++,
                 ageRange: {min:10,max:100},
                 qiuRange: {min:6,max:1},
                 massRange:{min:10,max:90},
-                tours: [
-                    {
-                        id:1,
-                        groups:[]
-                    }],
+                groups:[],
                 competitors: [],},];
         this.competitors=[
             {name: 'Max',
@@ -78,8 +71,9 @@ export class Store {
         this.destroyTournir = this.destroyTournir.bind(this);
         this.addCompetitor = this.addCompetitor.bind(this);
         this.destroyCompetitor = this.destroyCompetitor.bind(this);
-        this.addTour = this.addTour.bind(this);
         this.addGroup = this.addGroup.bind(this);
+        this.destroyGroup = this.destroyGroup.bind(this);
+        this.destroyAllGroups = this.destroyAllGroups.bind(this);
         this.addListener = this.addListener.bind(this);
         this.emitChange = this.emitChange.bind(this);
     }
@@ -98,11 +92,7 @@ export class Store {
             ageRange: {min:AgeMin,max:AgeMax},
             qiuRange: {min:QiuMin,max:QiuMax},
             massRange:{min:MassMin,max:MassMax},
-            tours: [
-                {
-                    id:1,
-                    groups:[]
-                }],
+            groups:[],
             competitors: [],
         });
         console.dir(this.tournirs);
@@ -129,16 +119,19 @@ export class Store {
         this.competitors.splice(id,1);
         this.emitChange();
     }
-    addTour(){
-        this.tournirs[this.activeTournir].tours.push(
-            {
-                groups:[],
-            }
-        );
+    addGroup(pair){
+        let activeTournir_=this.tournirs.find(t=>t.id===this.activeTournir.id);
+        activeTournir_.groups.push(pair);
         this.emitChange();
     }
-    addGroup(){
-
+    destroyGroup(id){
+        let activeTournir_=this.tournirs.find(t=>t.id===this.activeTournir.id);
+        activeTournir_.groups=activeTournir_.groups.filter(pair=>pair.id!==id);
+        this.emitChange();
+    }
+    destroyAllGroups(){
+        this.tournirs.find(t=>t.id===this.activeTournir.id).groups=[];
+        this.emitChange();
     }
 
 }
