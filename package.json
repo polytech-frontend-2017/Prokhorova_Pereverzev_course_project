@@ -2,6 +2,10 @@
   "name": "pro-per",
   "version": "0.1.0",
   "private": true,
+  "description": "competition app",
+  "main": "index.js",
+  "author": "Max and I",
+  "license": "MIT",
   "dependencies": {
     "d3": "^4.12.2",
     "react": "^16.0.0",
