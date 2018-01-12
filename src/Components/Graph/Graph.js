@@ -54,7 +54,9 @@ class Graph extends Component {
             yMenu: 50,
             selectedNodeId:"",
             numberName:null,
+            activePair:null,
         };
+        this.activepairid = null;
         this.d3tree = d3.tree();
         this.line = d3.line();
         this.nodes=[];
@@ -70,6 +72,7 @@ class Graph extends Component {
         this.toggleMenu=this.toggleMenu.bind(this);
         this.menuSelect=this.menuSelect.bind(this);
         this.HideMenu=this.HideMenu.bind(this);
+        this.setActivePairInGraph=this.setActivePairInGraph.bind(this);
         this.updateD3(props);
     }
     createDataNodes(props){
@@ -123,7 +126,7 @@ class Graph extends Component {
                 if (selectValue.value && selectValue.value.id!==pair.name2.id)
                     pair.name1=selectValue.value;
                 break;
-            case 2:
+            default:
                 if (selectValue.value && pair.name1.id!==selectValue.value.id)
                     pair.name2=selectValue.value;
         }
@@ -139,8 +142,6 @@ class Graph extends Component {
         let arrIdPairs = this.nodes.filter(node=>node.depth===props.deepLevel);
         for(let i=0, ind=0;i<props.currentCompetitors.length;i+=2,ind++)
         {
-            console.log(ind);
-            console.log(arrIdPairs[ind]);
             let pair ={
                 name1:props.currentCompetitors[i],
                 name2:props.currentCompetitors[i+1],
@@ -168,6 +169,7 @@ class Graph extends Component {
     }
     makeGraph(node,index){
         let Pair = this.currentPairs.find(pair=>pair.id===node.data.name);
+
         if (Pair===undefined) {
             Pair = {
                 name1: this.createEmptyCompetitor(),
@@ -180,6 +182,8 @@ class Graph extends Component {
             this.currentPairs.push(Pair);
             this.props.addGroup(Pair);
         }
+
+        console.log(this.activepairid)
         let props = {
             id: node.data.name,
             x: this.props.width-node.y,
@@ -190,9 +194,11 @@ class Graph extends Component {
             pair:Pair,
             key: "graph-"+node.data.name,
             showMenu:this.toggleMenu,
+            activePair:this.activepairid,
+            setActivePairInGraph:this.setActivePairInGraph,
         };
         return (
-            <Node {...props}/>
+            <Node {...props} />
         );
     }
     linkHorizontal(link) {
@@ -207,6 +213,11 @@ class Graph extends Component {
             <path className="link" d={d} key={link.data.name} />
         )
     }
+
+    setActivePairInGraph(id){
+        this.activepairid=id;
+        this.setState({activePair:id})
+    }
     /*componentWillMount(){
         if (this.props.deepLevel===0) this.links =[];
         this.createDataNodes(this.props);
@@ -220,6 +231,7 @@ class Graph extends Component {
         this.updatePairs();
     }*/
     render() {
+        const activePair = this.activepairid;
         const translate = "translate("+this.props.x+50+","+this.props.y+")";
         return (
             <g className="graph" transform={translate}>
@@ -243,7 +255,7 @@ class Graph extends Component {
 
 
 export default connectDecorator(Graph,
-    ['addGroup','destroyGroup','destroyAllGroups'],
+    ['addGroup','destroyGroup','destroyAllGroups','addScore','destroyScore'],
     store => ({})
 );
 

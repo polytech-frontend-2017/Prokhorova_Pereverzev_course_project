@@ -12,3 +12,6 @@ fill: #000;
 .inner-g:hover{
     fill: #dfdfdf
 }
+.activePair{
+    stroke-width: 3px;
+}

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import {
   BrowserRouter as Router,
   Route,
@@ -7,13 +7,19 @@ import {
 import JudgeTool from './Components/judgeTool';
 import Home from './Home';
 
-const App = () => (
-  <Router>
-    <div>
-      <Route exact path="/" component={Home}/>
-      <Route path="/pultik" component={JudgeTool}/>
-    </div>
-  </Router>
-)
-
-export default App
+class App extends Component {
+    constructor(props){
+        super(props)
+    }
+    render(){
+        return(
+            <Router>
+                <div>
+                    <Route exact path="/" component={Home}/>
+                    <Route path="/pultik" component={JudgeTool}/>
+                </div>
+            </Router>
+        )
+    }
+}
+export default App;

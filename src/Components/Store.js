@@ -76,6 +76,8 @@ export class Store {
         this.destroyAllGroups = this.destroyAllGroups.bind(this);
         this.addListener = this.addListener.bind(this);
         this.emitChange = this.emitChange.bind(this);
+        this.addScore = this.addScore.bind(this);
+        this.destroyScore = this.destroyScore.bind(this);
     }
     createCompetition(Title, Date){
         this.competition = {title:Title, date:Date};
@@ -131,6 +133,22 @@ export class Store {
     }
     destroyAllGroups(){
         this.tournirs.find(t=>t.id===this.activeTournir.id).groups=[];
+        this.emitChange();
+    }
+    addScore(id,man){
+        const Pairs = this.tournirs.find(t=>t.id===this.activeTournir.id).groups;
+        const pair = Pairs.find(p=>p.id === id);
+        if (man===1)
+            pair.win1+=1;
+        else
+            pair.win2+=1;
+        this.emitChange();
+    }
+    destroyScore(id){
+        const Pairs = this.tournirs.find(t=>t.id===this.activeTournir.id).groups;
+        const pair = Pairs.find(p=>p.id === id);
+        pair.win1=0;
+        pair.win2=0;
         this.emitChange();
     }
 

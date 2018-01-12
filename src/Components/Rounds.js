@@ -1,24 +1,37 @@
 import React,{ Component } from 'react';
+import io from 'socket.io-client'
 import connectDecorator from "../context/connectDecorator";
 import './Rounds.css';
 import Graph from './Graph';
 
+import { MESSAGE_SENT, MESSAGE_RECIEVED, COMMUNITY_VOITING } from '../Events.js'
 
-
+const socketUrl = "http://93.100.173.116:3231";
 class Rounds extends Component {
     constructor(props) {
         super(props);
         this.currentSets=this.currentSets.bind(this);
         this.filterCompetitors=this.filterCompetitors.bind(this);
         this.countDeepLevelTree=this.countDeepLevelTree.bind(this);
+        this.getSocketData=this.getSocketData.bind(this);
+
         this.state={
+            socket:null,
+            user:null,
             currentTournirId:this.props.tournirs[0].id,
             currentCompetitors:this.filterCompetitors(this.props.tournirs[0]),
+
+            userVoices:null,
         };
 
         (this.state.currentCompetitors.length!==0)?
             this.levels = Math.ceil(Math.log2(Math.ceil(this.state.currentCompetitors.length/2))):this.levels =0;
     }
+    getSocketData(){
+        const socket = this.props.socket;
+        socket.emit(COMMUNITY_VOITING,true,this.props.user);
+    }
+
     countDeepLevelTree(currentCompetitors){
         if (currentCompetitors.length!==0)
             this.levels = Math.ceil(Math.log2(Math.ceil(currentCompetitors.length/2)));
@@ -69,7 +82,7 @@ class Rounds extends Component {
                             </div>
                         )}
                     </div>
-                    <button onClick={this.createPairs}>Начать соревнование</button>
+                    <button onClick={this.getSocketData}>Начать соревнование</button>
                 </div>
                 <div ref={ref => this.ref = ref} className={'Graph'} >
 

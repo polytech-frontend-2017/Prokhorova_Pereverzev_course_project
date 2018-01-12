@@ -8,6 +8,7 @@ class Node extends Component {
         this.state={
             widthRectComp:this.props.width-30,
             heightRectComp:this.props.height/2-15,
+
         };
         this.firstName="no";
         this.secondName="no";
@@ -59,12 +60,15 @@ class Node extends Component {
     }
 
     render() {
+        const active=this.props.activePair === this.props.id;
         const x=this.props.x,
             y=this.props.y;
         let translate = "translate(" + x + "," + (y-this.props.height/2) + ")";
         let label = "Group "+this.props.index;
         return(
-            <g transform={translate} className="node">
+            <g transform={translate}
+               className={"node" + (active ?" activePair":"")}
+               onClick={()=>{this.props.setActivePairInGraph(this.props.id)}}>
                 <g className={"inner-g"} onContextMenu={this.showChoose.bind(this,1)}>
                     <rect
                         width={this.state.widthRectComp}
