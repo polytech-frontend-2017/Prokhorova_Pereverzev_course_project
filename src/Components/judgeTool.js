@@ -59,7 +59,7 @@ class judgeTool extends Component {
     this.setState({ pass: e.target.value });
   }
   choose(nameChoose) {
-    this.socket.emit(VOITING_SENT, nameChoose, this.state.user);
+    this.socket.emit(VOITING_SENT, nameChoose, this.state.user.id);
     this.setState({ choise: nameChoose, isDisable: true });
     console.log(nameChoose);
   }

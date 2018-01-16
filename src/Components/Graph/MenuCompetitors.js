@@ -44,39 +44,45 @@ class MenuCompetitors extends Component {
     });
   }
   render() {
-    let options = this.props.currCompetitors.map(
+    const options = this.props.currCompetitors.map(
       c => (c = { label: c.name + ' ' + c.surname, value: c })
     );
+    console.log(this.props.x + ' ' + this.props.y);
     return (
-      <foreignObject x={this.props.x} y={this.props.y} width="210" height="100">
-        <div className={'select-menu'}>
-          <Select
-            className={'Select'}
-            size={'210px'}
-            id="name-select"
-            ref={ref => {
-              this.select = ref;
-            }}
-            onBlurResetsInput={false}
-            onSelectResetsInput={false}
-            autoFocus
-            options={options}
-            clearable={this.state.clearable}
-            name="selected-name"
-            disabled={this.state.disabled}
-            value={this.state.selectValue}
-            onChange={this.updateValue}
-            rtl={this.state.rtl}
-            searchable={this.state.searchable}
-            width={300}
-            onInputKeyDown={e => {
-              if (e.which === 13 && this.state.selectValue)
-                this.props.menuSelect(this.state.selectValue);
-              else if (e.which === 27) this.props.hideMenu();
-            }}
-          />
-        </div>
-      </foreignObject>
+      <div
+        className={'select-menu'}
+        style={{
+          top: this.props.y,
+          left: this.props.x,
+          position: 'relative'
+        }}
+      >
+        <Select
+          className={'Select'}
+          size={'210px'}
+          id="name-select"
+          ref={ref => {
+            this.select = ref;
+          }}
+          onBlurResetsInput={false}
+          onSelectResetsInput={false}
+          autoFocus
+          options={options}
+          clearable={this.state.clearable}
+          name="selected-name"
+          disabled={this.state.disabled}
+          value={this.state.selectValue}
+          onChange={this.updateValue}
+          rtl={this.state.rtl}
+          searchable={this.state.searchable}
+          width={300}
+          onInputKeyDown={e => {
+            if (e.which === 13 && this.state.selectValue)
+              this.props.menuSelect(this.state.selectValue);
+            else if (e.which === 27) this.props.hideMenu();
+          }}
+        />
+      </div>
     );
   }
 }

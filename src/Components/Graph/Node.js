@@ -4,20 +4,6 @@ import './Node.css';
 class Node extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      widthRectComp: this.props.width - 30,
-      heightRectComp: this.props.height / 2 - 15
-    };
-    this.firstName = 'no';
-    this.secondName = 'no';
-    this.win1 = 0;
-    this.win2 = 0;
-    this.changeNameFirst = this.changeNameFirst.bind(this);
-    this.changeNameSecond = this.changeNameSecond.bind(this);
-    this.showChoose = this.showChoose.bind(this);
-    this.updatePair(props);
-  }
-  updatePair(props) {
     let Name_1 = '',
       Name_2 = '';
     if (props.pair.name1 && props.pair.name2) {
@@ -29,20 +15,45 @@ class Node extends Component {
         : '';
       Name_1 = props.pair.name1.surname + ' ' + Name_1;
       Name_2 = props.pair.name2.surname + ' ' + Name_2;
-      this.firstName = Name_1;
-      this.secondName = Name_2;
-      this.win1 = 0;
-      this.win2 = 0;
     }
+    this.state = {
+      widthRectComp: this.props.width - 30,
+      heightRectComp: this.props.height / 2 - 15,
+      firstName: Name_1,
+      secondName: Name_2,
+      win1: props.pair.win1,
+      win2: props.pair.win2
+    };
+    this.changeNameFirst = this.changeNameFirst.bind(this);
+    this.changeNameSecond = this.changeNameSecond.bind(this);
+    this.showChoose = this.showChoose.bind(this);
+  }
+
+  componentWillReceiveProps(newProps) {
+    let Name_1 = '',
+      Name_2 = '';
+    if (newProps.pair.name1 && newProps.pair.name2) {
+      newProps.pair.name1.name
+        ? (Name_1 = newProps.pair.name1.name.substr(0, 1) + '.')
+        : '';
+      newProps.pair.name2.name
+        ? (Name_2 = newProps.pair.name2.name.substr(0, 1) + '.')
+        : '';
+      Name_1 = newProps.pair.name1.surname + ' ' + Name_1;
+      Name_2 = newProps.pair.name2.surname + ' ' + Name_2;
+    }
+    this.setState({
+      firstName: Name_1,
+      secondName: Name_2,
+      win1: newProps.pair.win1,
+      win2: newProps.pair.win2
+    });
   }
   changeNameFirst(name) {
     this.setState({ firstName: name });
   }
   changeNameSecond(name) {
     this.setState({ secondName: name });
-  }
-  componentWillReceiveProps(newProps) {
-    this.updatePair(newProps);
   }
   showChoose(num, event) {
     event.preventDefault();
@@ -86,7 +97,7 @@ class Node extends Component {
             y={this.state.heightRectComp + 10}
             className={'text-group red-node-text'}
           >
-            {this.firstName}
+            {this.state.firstName}
           </text>
           <rect
             width={this.state.heightRectComp}
@@ -99,7 +110,7 @@ class Node extends Component {
             y={this.state.heightRectComp + 10}
             className={'text-group red-node-text'}
           >
-            {this.win1}
+            {this.state.win1}
           </text>
         </g>
         <g
@@ -117,7 +128,7 @@ class Node extends Component {
             y={this.state.heightRectComp * 2 + 15}
             className={'text-group'}
           >
-            {this.secondName}
+            {this.state.secondName}
           </text>
           <rect
             width={this.state.heightRectComp}
@@ -136,7 +147,7 @@ class Node extends Component {
             y={this.state.heightRectComp * 2 + 15}
             className={'text-group'}
           >
-            {this.win2}
+            {this.state.win2}
           </text>
         </g>
         <text x={5} y={17} className={'text-group'}>
