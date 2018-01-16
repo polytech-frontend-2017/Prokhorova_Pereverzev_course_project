@@ -8,24 +8,26 @@ import ListCompetitors from './Components/ListCompetitors.js';
 import ListTournirs from './Components/ListTournirs';
 import Rounds from './Components/Rounds';
 import io from 'socket.io-client';
-import { USER_CONNECTED /*, LOGOUT*/, VERIFY_USER } from './Events';
+import { USER_CONNECTED, LOGOUT, VERIFY_USER } from './Events';
 
 const socketUrl = 'http://93.100.173.116:3231';
 
 class Home extends Component {
   constructor() {
     super();
+    this.setUser = this.setUser.bind(this);
     this.store = new Store();
     this.socket = io(socketUrl);
     this.state = {
       page: 'CreateCompMenu',
       socket: null,
-      user: null,
+      user: sessionStorage.getItem('socketUserName') || null,
       login: '',
       pass: '',
       error: '',
       logout: false
     };
+
     this.routes = {
       ListCompetitors: {
         component: ListCompetitors
@@ -40,37 +42,41 @@ class Home extends Component {
         component: Rounds
       }
     };
-  }
-  handlerRegister(e) {
-    e.preventDefault();
-
     this.socket.on('connect', () => {
       console.log('Connected');
     });
+  }
+  handlerRegister(e) {
+    e.preventDefault();
     const { login } = this.state;
     this.socket.emit(VERIFY_USER, login, this.setUser);
   }
   /*
-    *Sets the user in state
-    * @param user {id:number, name:string}
-     */
+  * Sets the user in state
+  * @param user {id:number, name:string}
+  */
   setUser = ({ user, isUser }) => {
     console.log(user, isUser);
     if (isUser) {
       this.setError('User name taken');
     } else {
-      this.socket.emit(USER_CONNECTED, user);
-      this.setState({ user: user });
       this.setError('');
+      this.socket.emit(USER_CONNECTED, user, 'menu');
+      this.setState({ user: user });
+      sessionStorage.setItem('socketUserName', user.name);
     }
   };
   setError = error => {
     this.setState({ error });
   };
-  /*logout=()=>{
-        this.socket.emit(LOGOUT);
-        this.setState({user:null})
-    };*/
+
+  logout = () => {
+    this.socket.emit(LOGOUT);
+    this.setState({ user: null });
+    console.log('logout');
+    sessionStorage.removeItem('socketUserName');
+  };
+
   changeShow(num) {
     switch (num) {
       case 'Соревнующиеся':
@@ -85,6 +91,9 @@ class Home extends Component {
       case 'Раунды':
         this.setState({ page: 'Rounds' });
         break;
+      case 'Выход':
+        this.logout();
+        break;
       default:
         this.setState({ page: 'Rounds' });
     }
@@ -95,16 +104,27 @@ class Home extends Component {
   handlePassChange(e) {
     this.setState({ pass: e.target.value });
   }
+  componentWillMount() {
+    if (sessionStorage.getItem('socketUserName'))
+      this.socket.emit(
+        VERIFY_USER,
+        sessionStorage.getItem('socketUserName'),
+        this.setUser
+      );
+  }
   render() {
-    let config = this.routes[this.state.page];
-    let PageComponent = config.component;
+    const config = this.routes[this.state.page];
+    const PageComponent = config.component;
     const { login, error, user } = this.state;
     return (
       <div>
         {user ? (
           <Provider store={this.store}>
             <div className="App">
-              <MenuHeader changeShow={this.changeShow.bind(this)} />
+              <MenuHeader
+                changeShow={this.changeShow.bind(this)}
+                logout={this.logout}
+              />
               <main className={'main-container'}>
                 <PageComponent socket={this.socket} user={user} />
               </main>
@@ -127,7 +147,7 @@ class Home extends Component {
               <input
                 className="container-input"
                 size={this.state.pass}
-                type="text"
+                type="password"
                 name="pass"
                 placeholder="password"
                 required

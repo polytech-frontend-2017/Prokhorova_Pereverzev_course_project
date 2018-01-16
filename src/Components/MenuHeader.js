@@ -22,7 +22,8 @@ class MenuHeader extends Component {
       { name: 'Соревнующиеся' },
       { name: 'Турниры' },
       { name: 'Раунды' },
-      { name: 'Соревнование' }
+      { name: 'Соревнование' },
+      { name: 'Выход' }
     ];
   }
   ShowOrHideForm(name) {
@@ -53,7 +54,6 @@ class MenuHeader extends Component {
               </div>
             );
           })}
-          <div className={'verticalLine'} />
         </ul>
       </div>
     );

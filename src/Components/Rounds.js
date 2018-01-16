@@ -3,30 +3,23 @@ import io from 'socket.io-client';
 import connectDecorator from '../context/connectDecorator';
 import './Rounds.css';
 import Graph from './Graph';
+import MenuCompetitors from './Graph/MenuCompetitors';
+import { VOITING_SENT, VOICE_RECIEVED, COMMUNITY_VOITING } from '../Events.js';
 
-import {
-  MESSAGE_SENT,
-  MESSAGE_RECIEVED,
-  COMMUNITY_VOITING
-} from '../Events.js';
-
-const socketUrl = 'http://93.100.173.116:3231';
 class Rounds extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      user: null,
+      currentTournirId: this.props.tournirs[0].id,
+      currentCompetitors: this.filterCompetitors(this.props.tournirs[0]),
+      isVoiting: true,
+      userVoices: null
+    };
     this.currentSets = this.currentSets.bind(this);
     this.filterCompetitors = this.filterCompetitors.bind(this);
     this.countDeepLevelTree = this.countDeepLevelTree.bind(this);
     this.getSocketData = this.getSocketData.bind(this);
-    this.state = {
-      socket: null,
-      user: null,
-      currentTournirId: this.props.tournirs[0].id,
-      currentCompetitors: this.filterCompetitors(this.props.tournirs[0]),
-
-      userVoices: null
-    };
-
     this.state.currentCompetitors.length !== 0
       ? (this.levels = Math.ceil(
           Math.log2(Math.ceil(this.state.currentCompetitors.length / 2))
@@ -34,8 +27,12 @@ class Rounds extends Component {
       : (this.levels = 0);
   }
   getSocketData() {
-    const socket = this.props.socket;
-    socket.emit(COMMUNITY_VOITING, true, this.props.user);
+    this.setState({ isVoiting: !this.state.isVoiting });
+    this.props.socket.emit(
+      COMMUNITY_VOITING,
+      this.state.isVoiting,
+      this.props.user
+    );
   }
 
   countDeepLevelTree(currentCompetitors) {
@@ -69,16 +66,19 @@ class Rounds extends Component {
   componentWillMount() {
     this.props.setActiveTournir(this.props.tournirs[0]);
   }
+
   render() {
     const widthGraph = this.levels * 300,
       heightGraph = 2 ** this.levels * 150;
+
+    const { isVoiting, currentCompetitors, currentTournirId } = this.state;
     return (
       <div className={'rounds-main'}>
         <div className={'container-rounds-list'}>
           <select
             className={'container-rounds'}
             onChange={this.currentSets}
-            value={this.state.currentTournirId}
+            value={currentTournirId}
           >
             {this.props.tournirs.map((tournir, i) => (
               <option key={i} value={tournir.id}>
@@ -96,7 +96,7 @@ class Rounds extends Component {
             ))}
           </select>
           <div>
-            {this.state.currentCompetitors.map((competitor, i) => (
+            {currentCompetitors.map((competitor, i) => (
               <div className={'list-competitor'} key={i}>
                 <span>
                   {i + 1 + '. ' + competitor.name + ' ' + competitor.surname}
@@ -105,14 +105,19 @@ class Rounds extends Component {
               </div>
             ))}
           </div>
-          <button onClick={this.getSocketData}>Начать соревнование</button>
+          <button
+            className={'stBtn' + isVoiting ? 'startBtn' : 'stopBtn'}
+            onClick={this.getSocketData}
+          >
+            {isVoiting ? 'START' : 'STOP'}
+          </button>
         </div>
         <div ref={ref => (this.ref = ref)} className={'Graph'}>
           <svg width={widthGraph + 300} height={heightGraph + 100}>
             {
               <Graph
-                activeTournir={this.props.tournirs[this.state.currentTournirId]}
-                currentCompetitors={this.state.currentCompetitors}
+                activeTournir={this.props.tournirs[currentTournirId]}
+                currentCompetitors={currentCompetitors}
                 x={0}
                 y={0}
                 width={widthGraph}
@@ -130,6 +135,5 @@ class Rounds extends Component {
 
 export default connectDecorator(Rounds, ['setActiveTournir'], store => ({
   tournirs: store.tournirs,
-  competitors: store.competitors,
-  activeTournir: store.activeTournir
+  competitors: store.competitors
 }));

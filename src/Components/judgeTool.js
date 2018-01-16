@@ -1,8 +1,15 @@
 import React, { Component } from 'react';
 import './judgeTool.css';
 import '../App.css';
-import { USER_CONNECTED, LOGOUT, VERIFY_USER } from '../Events';
+import {
+  USER_CONNECTED,
+  VERIFY_USER,
+  START_VOITING,
+  STOP_VOITING,
+  VOITING_SENT
+} from '../Events';
 import io from 'socket.io-client';
+
 const socketUrl = 'http://93.100.173.116:3231';
 class judgeTool extends Component {
   constructor(props) {
@@ -10,47 +17,40 @@ class judgeTool extends Component {
     this.state = {
       choise: '',
       isDisable: false,
-      setActive: true,
+      setActive: false,
       user: null,
       login: '',
       pass: '',
-      error: '',
-      logout: false
+      error: ''
     };
     this.socket = io(socketUrl);
+    this.socket.on(START_VOITING || STOP_VOITING, isActive => {
+      this.setState({ setActive: isActive });
+    });
     this.socket.on('connect', () => {
       console.log('Connected');
     });
     this.choose = this.choose.bind(this);
     this.change = this.change.bind(this);
   }
+
   handlerRegister(e) {
     e.preventDefault();
     const { login } = this.state;
     this.socket.emit(VERIFY_USER, login, this.setUser);
   }
-  setUser = ({ user, isUser }) => {
+  setUser = ({ user, isUser, isActive }) => {
     console.log(user, isUser);
     if (isUser) {
       this.setError('User name taken');
     } else {
-      this.socket.emit(USER_CONNECTED, user);
-      this.setState({ user: user });
       this.setError('');
+      this.socket.emit(USER_CONNECTED, user);
+      this.setState({ user: user, setActive: isActive });
     }
   };
   setError = error => {
     this.setState({ error });
-  };
-  logout = () => {
-    this.socket.emit(LOGOUT);
-    this.setState({ user: null });
-  };
-  setActiveBtn = () => {
-    this.setState({ setActive: true });
-  };
-  setPassiveBtn = () => {
-    this.setState({ setActive: false });
   };
   handleLoginChange(e) {
     this.setState({ login: e.target.value });
@@ -59,6 +59,7 @@ class judgeTool extends Component {
     this.setState({ pass: e.target.value });
   }
   choose(nameChoose) {
+    this.socket.emit(VOITING_SENT, nameChoose, this.state.user);
     this.setState({ choise: nameChoose, isDisable: true });
     console.log(nameChoose);
   }
@@ -80,8 +81,8 @@ class judgeTool extends Component {
               {'Aka'}
             </button>
             <button
-              className={'blue'}
-              onClick={this.choose.bind(this, 'blue')}
+              className={'white'}
+              onClick={this.choose.bind(this, 'white')}
               disabled={!this.state.setActive || this.state.isDisable}
             >
               {'Shiro'}
@@ -105,13 +106,13 @@ class judgeTool extends Component {
                 name="login"
                 placeholder="nickname"
                 required
-                defaultValue={this.state.login}
+                defaultValue={login}
                 onInput={this.handleLoginChange.bind(this)}
               />
               <input
                 className="container-input"
                 size={this.state.pass}
-                type="text"
+                type="password"
                 name="pass"
                 placeholder="password"
                 required

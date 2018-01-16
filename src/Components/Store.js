@@ -98,7 +98,7 @@ export class Store {
   }
   setActiveTournir(ActiveTournir) {
     this.activeTournir = ActiveTournir;
-    this.emitChange();
+    //this.emitChange();
   }
   addTournir(AgeMin, AgeMax, QiuMin, QiuMax, MassMin, MassMax) {
     this.tournirs.push({
