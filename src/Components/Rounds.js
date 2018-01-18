@@ -4,7 +4,7 @@ import connectDecorator from '../context/connectDecorator';
 import './Rounds.css';
 import Graph from './Graph';
 import MenuCompetitors from './Graph/MenuCompetitors';
-import { VOITING_SENT, VOICE_RECIEVED, COMMUNITY_VOITING } from '../Events.js';
+import { VOICE_RECIEVED, COMMUNITY_VOITING } from '../Events.js';
 import * as d3 from 'd3';
 
 function createEmptyDataTree(levels, parent, levelBuild) {
@@ -54,103 +54,155 @@ function createEmptyDataTree(levels, parent, levelBuild) {
 class Rounds extends Component {
   constructor(props) {
     super(props);
-    this.currentCompetitors = this.filterCompetitors(this.props.tournirs[0]);
+    //this.currentTournir = this.props.activeTournir;
+    //this.currentCompetitors = this.filterCompetitors(this.currentTournir);
     this.state = {
+      judgeVoices: [],
+      judgeVoicesCount: { win1: 0, win2: 0, id: '' },
       user: null,
-      currentTournir: this.props.tournirs[0],
-      currentCompetitors: this.currentCompetitors,
+      currentTournir: this.props.activeTournir,
+      currentCompetitors: this.filterCompetitors(this.props.activeTournir),
       isVoiting: true,
-      userVoices: null,
       showMenu: false,
       xMenu: 50,
-      yMenu: 50
+      yMenu: 50,
+      fixed: this.props.activeTournir.fixed,
+      numberName: null,
+      line: d3.line(),
+      root: [],
+      nodes: [],
+      links: [],
+      DataNodes: [],
+      activePair: '',
+      levels: 0
     };
-    this.numberName = null;
-    this.props.setActiveTournir(this.props.tournirs[0]);
-    //graphData
     this.d3tree = d3.tree();
     this.line = d3.line();
-    this.root = [];
-    this.nodes = [];
-    this.links = [];
-    this.DataNodes = [];
-    this.currentPairs = [];
-    this.SelectedNodeId = '';
-    this.createDataNodes = this.createDataNodes.bind(this);
     this.createPairs = this.createPairs.bind(this);
+    this.fixedTournir = this.fixedTournir.bind(this);
+    this.createD3 = this.createD3.bind(this);
+    this.newEmptyTree = this.newEmptyTree.bind(this);
     this.updateD3 = this.updateD3.bind(this);
-    this.updatePairs = this.updatePairs.bind(this);
-    this.createEmptyCompetitor = this.createEmptyCompetitor.bind(this);
 
-    this.toggleMenu = this.toggleMenu.bind(this);
+    this.toggleMenuName = this.toggleMenuName.bind(this);
     this.HideMenu = this.HideMenu.bind(this);
     this.menuSelect = this.menuSelect.bind(this);
+    this.setActivePairId = this.setActivePairId.bind(this);
+    this.changeScore = this.changeScore.bind(this);
 
     this.currentSets = this.currentSets.bind(this);
     this.filterCompetitors = this.filterCompetitors.bind(this);
     this.countDeepLevelTree = this.countDeepLevelTree.bind(this);
-    this.getSocketData = this.getSocketData.bind(this);
-    this.currentCompetitors.length !== 0
-      ? (this.levels = Math.ceil(
-          Math.log2(Math.ceil(this.currentCompetitors.length / 2))
-        ))
-      : (this.levels = 0);
-    this.updateD3(props);
-  }
-  componentWillReceiveProps(newProps) {
-    //this.updateD3(newProps);
-  }
-  createDataNodes() {
-    if (this.levels === -1) return false;
-    this.DataNodes = createEmptyDataTree(this.levels, null, 0);
-    return true;
-  }
-  updateD3(props) {
-    if (this.levels === 0) this.links = [];
-    if (this.createDataNodes()) {
-      this.root = d3.hierarchy(this.DataNodes[0], function(d) {
-        return d.children;
-      });
-      const widthGraph = this.levels * 300,
-        heightGraph = 2 ** this.levels * 150;
-      this.root.x0 = heightGraph / 2;
-      this.root.y0 = 0;
-      this.d3tree.size([heightGraph, widthGraph]);
-      let treeData = this.d3tree(this.root);
-      this.nodes = treeData.descendants();
-      this.links = treeData.descendants().slice(1);
+    this.getSocketDataVoiting = this.getSocketDataVoiting.bind(this);
 
-      this.updatePairs(props);
-      console.log(this.nodes);
-    }
+    this.props.socket.on(VOICE_RECIEVED, judgeVoices => {
+      this.changeScore(judgeVoices);
+    });
   }
-  updatePairs() {
-    //if (this.state.currentTournir.groups.filter(pair => pair.depth === this.levels).length === 0)
-    this.createPairs();
-    /*else {
-            this.currentPairs = this.state.currentTournir.groups;
-        }*/
-  }
-  toggleMenu(x, y, SelectedNodeId, NumberName) {
-    if (SelectedNodeId !== '') {
-      this.numberName = NumberName;
-      this.SelectedNodeId = SelectedNodeId;
+  changeScore(judgeVoices) {
+    let arrVoices = [];
+    for (let key in judgeVoices) arrVoices.push(judgeVoices[key]);
+    console.log(this.state.activePair);
+    let Node = this.state.nodes.find(
+      node => node.data.name === this.state.activePair
+    );
+    console.log(Node);
+    console.log(judgeVoices);
+    let judgeVoicesCount = this.countVoices(judgeVoices, this.state.activePair);
+    if (Node) {
+      Node.pair.win1 = judgeVoicesCount.win1;
+      Node.pair.win2 = judgeVoicesCount.win2;
     }
     this.setState({
+      judgeVoices: arrVoices,
+      judgeVoicesCount: judgeVoicesCount
+    });
+  }
+  countVoices(judgeVoices, idPair) {
+    let win1 = 0,
+      win2 = 0;
+    for (let key in judgeVoices)
+      judgeVoices[key].voice === 'red' ? win1++ : win2++;
+    return { win1, win2, id: idPair };
+  }
+  createD3(level, currCompetitors, currTournir) {
+    let emptyTree = this.newEmptyTree(level);
+    let fillTree = this.createPairs(
+      level,
+      emptyTree,
+      currCompetitors,
+      currTournir
+    );
+    return fillTree;
+  }
+  newEmptyTree(level) {
+    let DataNodes_ = createEmptyDataTree(level, null, 0);
+    let root = d3.hierarchy(DataNodes_[0], function(d) {
+      return d.children;
+    });
+    const widthGraph = level * 300,
+      heightGraph = 2 ** level * 150;
+    root.x0 = heightGraph / 2;
+    root.y0 = 0;
+    let d3Tree = this.d3tree;
+    d3Tree.size([heightGraph, widthGraph]);
+    let treeData = d3Tree(root);
+    let nodes = treeData.descendants();
+    let links = treeData.descendants().slice(1);
+    if (level === 0) links = [];
+    return {
+      DataNodes: DataNodes_,
+      root: root,
+      d3tree: d3Tree,
+      nodes: nodes,
+      links: links
+    };
+  }
+  updateD3(level, currCompetitors, currTournir) {
+    //count number of graph competitors in last level
+    let pairsLastLevel = currTournir.groups.filter(
+      pair => pair.depth === this.levels
+    );
+    let AllCompetotors = pairsLastLevel.reduce(function(curr, pair) {
+      return [...curr, pair.name1, pair.name2];
+    }, []);
+    AllCompetotors = AllCompetotors.filter((value, index, self) => {
+      return self.indexOf(value) === index && value.surname !== 'no';
+    });
+
+    let fillTree = {};
+    if (AllCompetotors.length !== currCompetitors.length && !currTournir.fixed)
+      fillTree = this.createD3(level, currCompetitors, currTournir);
+    else {
+      fillTree = this.fillNodesByPairs(level, currCompetitors, currTournir);
+    }
+    return fillTree;
+  }
+  fillNodesByPairs(level, currCompetitors, currTournir) {
+    let pairs = currTournir.groups;
+    let emptyTree = this.newEmptyTree(level);
+    emptyTree.nodes.map(
+      node => (node.pair = pairs.find(pair => pair.id === node.data.name))
+    );
+    return emptyTree;
+  }
+  toggleMenuName(x, y, activePair, NumberName) {
+    this.setState({
+      numberName: NumberName,
+      activePair: activePair,
       showMenu: true,
       xMenu: x,
       yMenu: y
     });
   }
+  setActivePairId(id) {
+    this.setState({ activePair: id });
+  }
   HideMenu() {
-    this.setState({
-      showMenu: false
-    });
+    this.setState({ showMenu: false });
   }
   menuSelect(selectValue) {
-    this.HideMenu();
-    let nod = this.nodes.find(node => node.data.name === this.SelectedNodeId);
-    let node = this.nodes.find(node => node.pair.id === this.SelectedNodeId);
+    let node = this.state.nodes.find(node => node.pair.id === this.activePair);
     switch (this.numberName) {
       case 1:
         if (selectValue && selectValue.value.id !== node.pair.name2.id)
@@ -160,54 +212,47 @@ class Rounds extends Component {
         if (selectValue && node.pair.name1.id !== selectValue.value.id)
           node.pair.name2 = selectValue.value;
     }
-
+    this.HideMenu();
     /** ...change pair */
-    this.props.destroyGroup(node.pair.id);
-    this.props.addGroup(node.pair);
-    nod.data.name = this.SelectedNodeId;
-    console.log(this.nodes[1]);
-    //this.updateD3(this.props);
+    this.props.destroyGroup(node.pair.id, this.currentTournir.id);
+    this.props.addGroup(node.pair, this.currentTournir.id);
   }
-  createPairs() {
-    this.props.destroyAllGroups();
+  createPairs(level, emptyTree, currCompetitors, currTournir) {
+    this.props.destroyAllGroups(currTournir.id);
     let arrPairs = [];
-    let arrIdPairs = this.nodes.filter(node => node.depth === this.levels);
-    for (
-      let i = 0, ind = 0;
-      i < this.currentCompetitors.length;
-      i += 2, ind++
-    ) {
-      let pair = {
-        name1: this.currentCompetitors[i],
-        name2: this.currentCompetitors[i + 1],
-        win1: 0,
-        win2: 0,
-        depth: this.levels,
-        id: arrIdPairs[ind].data.name
-      };
-      arrIdPairs[ind].pair = pair; //!!!!!!!!!!!!!!!!!!!!!
+    let nodesLastLvl = emptyTree.nodes.filter(node => node.depth === level);
+    let indexNode = 0;
+    for (let i = 0; i < currCompetitors.length; i += 2) {
+      let pair = this.createPair(
+        currCompetitors[i],
+        currCompetitors[i + 1],
+        0,
+        0,
+        level,
+        nodesLastLvl[indexNode].data.name
+      );
+      nodesLastLvl[indexNode++].pair = pair; //!!!!!!!!!!!!!!!!!!!!!
       arrPairs.push(pair);
     }
-    if (this.currentCompetitors.length % 2 !== 0)
-      arrIdPairs[arrIdPairs.length - 1].pair.name2 = 'no';
-
-    this.nodes.map(node => {
+    if (currCompetitors.length % 2 !== 0)
+      nodesLastLvl[indexNode - 1].pair.name2 = this.createEmptyCompetitor();
+    emptyTree.nodes.map(node => {
       if (!node.pair) {
-        const Pair = {
-          name1: this.createEmptyCompetitor(),
-          name2: this.createEmptyCompetitor(),
-          win1: 0,
-          win2: 0,
-          depth: node.depth,
-          id: node.data.name
-        };
+        const Pair = this.createPair(
+          this.createEmptyCompetitor(),
+          this.createEmptyCompetitor(),
+          0,
+          0,
+          node.depth,
+          node.data.name
+        );
         node.pair = Pair;
-        this.props.addGroup(Pair);
+        this.props.addGroup(Pair, currTournir.id);
         arrPairs.push(Pair);
       }
+      this.props.addGroup(node.pair, currTournir.id);
     });
-    arrIdPairs.forEach(node => this.props.addGroup(node.pair));
-    this.currentPairs = arrPairs;
+    return emptyTree;
   }
   createEmptyCompetitor() {
     return {
@@ -219,8 +264,18 @@ class Rounds extends Component {
       mass: 0
     };
   }
+  createPair(competitor1_, competitor2_, win1_, win2_, depth_, id_) {
+    return {
+      name1: competitor1_,
+      name2: competitor2_,
+      win1: win1_,
+      win2: win2_,
+      depth: depth_,
+      id: id_
+    };
+  }
 
-  getSocketData() {
+  getSocketDataVoiting() {
     this.setState({ isVoiting: !this.state.isVoiting });
     this.props.socket.emit(
       COMMUNITY_VOITING,
@@ -228,42 +283,80 @@ class Rounds extends Component {
       this.props.user
     );
   }
-
+  fixedTournir() {
+    this.props.fixedTournir(this.currentTournir.id);
+    this.setState({ fixed: !this.state.fixed });
+  }
   countDeepLevelTree(currentCompetitors) {
+    let level = 0;
     if (currentCompetitors.length !== 0)
-      this.levels = Math.ceil(
-        Math.log2(Math.ceil(currentCompetitors.length / 2))
-      );
+      level = Math.ceil(Math.log2(Math.ceil(currentCompetitors.length / 2)));
+    return level;
   }
   currentSets(event) {
     let currentTournir = this.props.tournirs.find(
       tournir => tournir.id === Number(event.target.value)
     );
+    this.props.changeactiveTournir(currentTournir);
     let currCompetitors = this.filterCompetitors(currentTournir);
-    this.countDeepLevelTree(currCompetitors);
-    this.currentCompetitors = currCompetitors;
+    let level = this.countDeepLevelTree(currCompetitors);
+    let fillTree = this.updateD3(level, currCompetitors, currentTournir);
     this.setState({
+      currentTournir: currentTournir,
       currentCompetitors: currCompetitors,
-      currentTournir: currentTournir
+      levels: level,
+      DataNodes: fillTree.DataNodes,
+      root: fillTree.root,
+      d3tree: fillTree.d3tree,
+      nodes: fillTree.nodes,
+      links: fillTree.links
     });
-    this.props.setActiveTournir(currentTournir);
-    this.updateD3();
   }
   filterCompetitors(currentTournir) {
-    return this.props.competitors.filter(
-      competitor =>
-        competitor.qiu <= currentTournir.qiuRange.min &&
-        competitor.qiu > currentTournir.qiuRange.max &&
-        competitor.age >= currentTournir.ageRange.min &&
-        competitor.age < currentTournir.ageRange.max
+    return this.props.competitors.filter(competitor =>
+      competitor.tournirsId.find(id => id === currentTournir.id)
     );
   }
-  componentWillMount() {}
-
+  componentWillMount() {
+    let currCompetitors = this.filterCompetitors(this.props.activeTournir);
+    let level = 0;
+    if (currCompetitors.length !== 0)
+      level = Math.ceil(Math.log2(Math.ceil(currCompetitors.length / 2)));
+    let fillTree = this.updateD3(
+      level,
+      currCompetitors,
+      this.props.activeTournir
+    );
+    this.setState({
+      currentTournir: this.props.activeTournir,
+      currentCompetitors: currCompetitors,
+      levels: level,
+      DataNodes: fillTree.DataNodes,
+      root: fillTree.root,
+      d3tree: fillTree.d3tree,
+      nodes: fillTree.nodes,
+      links: fillTree.links,
+      activePair: fillTree.nodes[fillTree.nodes.length - 1].data.name
+    });
+  }
   render() {
-    const widthGraph = this.levels * 300,
-      heightGraph = 2 ** this.levels * 150;
-    const { isVoiting, currentCompetitors, currentTournir } = this.state;
+    const {
+      isVoiting,
+      currentTournir,
+      currentCompetitors,
+      fixed,
+      judgeVoices,
+      levels,
+      activePair,
+      showMenu,
+      xMenu,
+      yMenu,
+      nodes,
+      links
+    } = this.state;
+    const widthGraph = levels * 300,
+      heightGraph = 2 ** levels * 150;
+    console.log(judgeVoices);
     return (
       <div className={'rounds-main'}>
         <div className={'container-rounds-list'}>
@@ -299,36 +392,44 @@ class Rounds extends Component {
           </div>
           <button
             className={'stBtn' + isVoiting ? 'startBtn' : 'stopBtn'}
-            onClick={this.getSocketData}
+            onClick={this.getSocketDataVoiting}
           >
             {isVoiting ? 'START' : 'STOP'}
           </button>
+          <button
+            className={'fixed-btn' + fixed ? 'fixed' : 'not-fixed'}
+            onClick={this.fixedTournir}
+          >
+            {fixed ? 'Разблокировать' : 'Начать соревнование'}
+          </button>
         </div>
-
         <div ref={ref => (this.ref = ref)} className={'Graph'}>
           <div className={'inner-graph'}>
             <svg width={widthGraph + 300} height={heightGraph + 100}>
-              {
+              {currentCompetitors.length > 1 && (
                 <Graph
-                  nodes={this.nodes}
-                  links={this.links}
-                  currentPairs={this.currentPairs}
+                  judgeVoices={judgeVoices}
+                  fixed={fixed}
+                  nodes={nodes}
+                  links={links}
                   x={0}
                   y={0}
                   width={widthGraph}
                   height={heightGraph}
-                  toggleMenu={this.toggleMenu}
+                  activePair={activePair}
+                  setActivePairId={this.setActivePairId}
+                  toggleMenuName={this.toggleMenuName}
                 />
-              }
+              )}
             </svg>
           </div>
-          {this.state.showMenu && (
+          {showMenu && (
             <MenuCompetitors
-              currCompetitors={this.state.currentCompetitors}
+              currCompetitors={currentCompetitors}
               menuSelect={this.menuSelect}
               hideMenu={this.HideMenu}
-              x={this.state.xMenu}
-              y={this.state.yMenu}
+              x={xMenu}
+              y={yMenu}
             />
           )}
         </div>
@@ -340,16 +441,15 @@ class Rounds extends Component {
 export default connectDecorator(
   Rounds,
   [
-    'setActiveTournir',
     'destroyAllGroups',
     'addGroup',
     'destroyGroup',
+    'fixedTournir',
     'addScore',
     'destroyScore'
   ],
   store => ({
     tournirs: store.tournirs,
-    competitors: store.competitors,
-    activeTournir: store.activeTournir
+    competitors: store.competitors
   })
 );

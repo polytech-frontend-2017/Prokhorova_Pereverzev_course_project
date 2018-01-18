@@ -14,22 +14,23 @@
     "lint-staged": "^6.0.0",
     "prettier": "^1.10.2",
     "react": "^16.0.0",
+    "react-contextmenu": "^2.9.2",
     "react-dom": "^16.0.0",
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.0.14",
     "react-select": "^1.2.0",
     "socket.io": "^2.0.4",
-    "uuid": "^3.1.0",
-    "socket.io-client": "latest"
+    "socket.io-client": "latest",
+    "uuid": "^3.1.0"
   },
- "lint-staged": {
-	"src/**/*.{js,jsx,json,css}": [
-	"prettier --single-quote --write",
-	"git add"
-	]
+  "lint-staged": {
+    "src/**/*.{js,jsx,json,css}": [
+      "prettier --single-quote --write",
+      "git add"
+    ]
   },
   "scripts": {
-	"precommit": "lint-staged",
+    "precommit": "lint-staged",
     "start": "concurrently --kill-others \"npm run react\" \"npm run server\"",
     "react": "react-scripts start",
     "server": "nodemon src/server/index.js",

@@ -1,39 +1,35 @@
 const uuidv4 = require('uuid/v4');
 
 /**
-* createUser
-* Creates a user.
-* @prop id {string}
-* @prop name {string}
-* @param {object}
-*   name{string}
+ * createUser
+ * Creates a user.
+ * @prop id {string}
+ * @prop name {string}
+ * @param {object}
+ *   name{string}
  */
-const createUser = ({name=""}={})=>(
-    {
-        id:uuidv4(),
-        name
-    }
-);
+const createUser = ({ name = '' } = {}) => ({
+  id: uuidv4(),
+  name
+});
 
 /**
-* createStartVoiting
-* Creates a Start Voiting object.
-* @prop id {string}
-* @prop time {Date} the time in 24hr format i.e. 14:22
-* @prop start {bool}
-* @prop sender {string}
-* @param {object}
-*   start{bool}
-*   sender{string}
-*/
-const createStartVoiting = ({start=true, sender=""}={})=>(
-    {
-        id:uuidv4(),
-        time:getTime(new Date(Date.now())),
-        start,
-        sender,
-    }
-);
+ * createStartVoiting
+ * Creates a Start Voiting object.
+ * @prop id {string}
+ * @prop time {Date} the time in 24hr format i.e. 14:22
+ * @prop start {bool}
+ * @prop sender {string}
+ * @param {object}
+ *   start{bool}
+ *   sender{string}
+ */
+const createStartVoiting = ({ start = true, sender = '' } = {}) => ({
+  id: uuidv4(),
+  time: getTime(new Date(Date.now())),
+  start,
+  sender
+});
 
 /**
  * createVoice
@@ -46,14 +42,12 @@ const createStartVoiting = ({start=true, sender=""}={})=>(
  *   voice{string}
  *   sender{string}
  */
-const createVoice = ({voice="", sender=""}={})=>(
-    {
-        id:uuidv4(),
-        time:getTime(new Date(Date.now())),
-        voice,
-        sender,
-    }
-);
+const createVoice = ({ voice = '', sender = { name: '' } } = {}) => ({
+  id: uuidv4(),
+  time: getTime(new Date(Date.now())),
+  voice,
+  name: sender.name
+});
 
 /*
 * CreateVoiting
@@ -67,27 +61,29 @@ const createVoice = ({voice="", sender=""}={})=>(
 *   name {string}
 *   users {Array.string}
 */
-const CreateVoiting = ({voiting=[],name="Voiting",users=[]}={})=>(
-    {
-        id:uuidv4(),
-        name,
-        voiting,
-        users,
-        typingUsers:[]
-    }
-);
+const CreateVoiting = ({
+  voiting = [],
+  name = 'Voiting',
+  users = []
+} = {}) => ({
+  id: uuidv4(),
+  name,
+  voiting,
+  users,
+  typingUsers: []
+});
 
 /**
  * @param date {Date}
  * @return a string represented in 24hr time i.e. '11:30'
  */
-const getTime = (date)=>{
-    return `${date.getHours()}:${("0"+date.getMinutes()).slice(-2)}`
+const getTime = date => {
+  return `${date.getHours()}:${('0' + date.getMinutes()).slice(-2)}`;
 };
 
 module.exports = {
-    createStartVoiting,
-    CreateVoiting,
-    createUser,
-    createVoice,
+  createStartVoiting,
+  CreateVoiting,
+  createUser,
+  createVoice: createVoice
 };

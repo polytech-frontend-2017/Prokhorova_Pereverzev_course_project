@@ -22,7 +22,8 @@ class Node extends Component {
       firstName: Name_1,
       secondName: Name_2,
       win1: props.pair.win1,
-      win2: props.pair.win2
+      win2: props.pair.win2,
+      active: false
     };
     this.changeNameFirst = this.changeNameFirst.bind(this);
     this.changeNameSecond = this.changeNameSecond.bind(this);
@@ -42,11 +43,20 @@ class Node extends Component {
       Name_1 = newProps.pair.name1.surname + ' ' + Name_1;
       Name_2 = newProps.pair.name2.surname + ' ' + Name_2;
     }
+    let win1 = newProps.pair.win1;
+    let win2 = newProps.pair.win2;
+    if (this.props.judgeVoices.id === this.props.id) {
+      win1 = this.props.judgeVoices.win1;
+      win2 = this.props.judgeVoices.win2;
+    }
+    const active = newProps.activePair === newProps.id;
+
     this.setState({
       firstName: Name_1,
       secondName: Name_2,
-      win1: newProps.pair.win1,
-      win2: newProps.pair.win2
+      win1: win1,
+      win2: win2,
+      active: active
     });
   }
   changeNameFirst(name) {
@@ -69,7 +79,7 @@ class Node extends Component {
   }
 
   render() {
-    const active = this.props.activePair === this.props.id;
+    const { win1, win2, active } = this.state;
     const x = this.props.x,
       y = this.props.y;
     let translate = 'translate(' + x + ',' + (y - this.props.height / 2) + ')';
@@ -78,21 +88,19 @@ class Node extends Component {
       <g
         transform={translate}
         className={'node' + (active ? ' activePair' : '')}
-        onClick={() => {
-          this.props.setActivePairInGraph(this.props.id);
-        }}
+        onClick={this.props.setActivePairId.bind(this, this.props.id)}
+        onContextMenu={this.props.setActivePairId.bind(this, this.props.id)}
       >
-        <g
-          className={'inner-g red-node'}
-          onContextMenu={this.showChoose.bind(this, 1)}
-        >
+        <g className={'inner-g red-node'}>
           <rect
+            onContextMenu={this.showChoose.bind(this, 1)}
             width={this.state.widthRectComp}
             height={this.state.heightRectComp}
             className={'rectComp'}
             transform="translate(0, 20)"
           />
           <text
+            onContextMenu={this.showChoose.bind(this, 1)}
             x={5}
             y={this.state.heightRectComp + 10}
             className={'text-group red-node-text'}
@@ -110,20 +118,19 @@ class Node extends Component {
             y={this.state.heightRectComp + 10}
             className={'text-group red-node-text'}
           >
-            {this.state.win1}
+            {win1}
           </text>
         </g>
-        <g
-          className={'inner-g wite-node'}
-          onContextMenu={this.showChoose.bind(this, 2)}
-        >
+        <g className={'inner-g wite-node'}>
           <rect
+            onContextMenu={this.showChoose.bind(this, 2)}
             width={this.state.widthRectComp}
             height={this.state.heightRectComp}
             className={'rectComp'}
             transform={'translate(0, ' + (this.state.heightRectComp + 25) + ')'}
           />
           <text
+            onContextMenu={this.showChoose.bind(this, 2)}
             x={5}
             y={this.state.heightRectComp * 2 + 15}
             className={'text-group'}
@@ -147,7 +154,7 @@ class Node extends Component {
             y={this.state.heightRectComp * 2 + 15}
             className={'text-group'}
           >
-            {this.state.win2}
+            {win2}
           </text>
         </g>
         <text x={5} y={17} className={'text-group'}>

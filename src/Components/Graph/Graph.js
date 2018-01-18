@@ -1,70 +1,22 @@
 import React, { Component } from 'react';
-import connectDecorator from '../../context/connectDecorator';
 import Node from './Node';
-import MenuCompetitors from './MenuCompetitors';
 import './Graph.css';
-function createEmptyDataTree(levels, parent, levelBuild) {
-  if (levels === levelBuild)
-    return [
-      {
-        name: parent + '-1',
-        parent: parent,
-        deep: levelBuild
-      },
-      {
-        name: parent + '-2',
-        parent: parent,
-        deep: levelBuild
-      }
-    ];
-  if (levelBuild === 0) {
-    return [
-      {
-        name: levelBuild + '-TOP',
-        parent: null,
-        children: createEmptyDataTree(
-          levels,
-          levelBuild + '-TOP',
-          levelBuild + 1
-        ),
-        deep: levelBuild
-      }
-    ];
-  } else {
-    let levelTree = [];
-    levelTree.push({
-      name: parent + '-1',
-      parent: parent,
-      children: createEmptyDataTree(levels, parent + '-1', levelBuild + 1),
-      deep: levelBuild
-    });
-    levelTree.push({
-      name: parent + '-2',
-      parent: parent,
-      children: createEmptyDataTree(levels, parent + '-2', levelBuild + 1),
-      deep: levelBuild
-    });
-    return levelTree;
-  }
-}
 
 class Graph extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activePair: '',
       nodes: this.props.nodes,
-      links: this.props.links
+      links: this.props.links,
+      judgeVoices: this.props.judgeVoices
     };
-    this.activepairid = '';
     this.linkHorizontal = this.linkHorizontal.bind(this);
-    this.setActivePairInGraph = this.setActivePairInGraph.bind(this);
   }
   componentWillReceiveProps(newProps) {
     this.setState({
       nodes: newProps.nodes,
       links: newProps.links,
-      activePair: this.state.activePair
+      judgeVoices: newProps.judgeVoices
     });
   }
   createEmptyCompetitor() {
@@ -102,12 +54,7 @@ class Graph extends Component {
     return <path className="link" d={d} key={link.data.name} />;
   }
 
-  setActivePairInGraph(id) {
-    this.activepairid = id;
-    this.setState({ activePair: id });
-  }
   render() {
-    const activePair = this.activepairid;
     const translate =
       'translate(' + this.props.x + 50 + ',' + this.props.y + ')';
     const { links, nodes } = this.state;
@@ -117,6 +64,7 @@ class Graph extends Component {
           {links.map(this.linkHorizontal)}
           {nodes.map((node, index) => (
             <Node
+              judgeVoices={this.props.judgeVoices}
               id={node.data.name}
               x={this.props.width - node.y}
               y={node.x}
@@ -125,9 +73,9 @@ class Graph extends Component {
               index={index}
               pair={node.pair}
               key={'graph-' + node.data.name}
-              showMenu={this.props.toggleMenu}
-              activePair={activePair}
-              setActivePairInGraph={this.setActivePairInGraph}
+              showMenu={this.props.toggleMenuName}
+              activePair={this.props.activePair}
+              setActivePairId={this.props.setActivePairId}
             />
           ))}
         </g>
@@ -136,8 +84,4 @@ class Graph extends Component {
   }
 }
 
-export default connectDecorator(
-  Graph,
-  ['addScore', 'destroyScore'],
-  store => ({})
-);
+export default Graph;

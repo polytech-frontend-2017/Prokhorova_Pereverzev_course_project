@@ -24,8 +24,11 @@ class judgeTool extends Component {
       error: ''
     };
     this.socket = io(socketUrl);
-    this.socket.on(START_VOITING || STOP_VOITING, isActive => {
-      this.setState({ setActive: isActive });
+    this.socket.on(START_VOITING, () => {
+      this.setState({ setActive: true, isDisable: false });
+    });
+    this.socket.on(STOP_VOITING, () => {
+      this.setState({ setActive: false });
     });
     this.socket.on('connect', () => {
       console.log('Connected');
@@ -36,8 +39,8 @@ class judgeTool extends Component {
 
   handlerRegister(e) {
     e.preventDefault();
-    const { login } = this.state;
-    this.socket.emit(VERIFY_USER, login, this.setUser);
+    const { login, pass } = this.state;
+    this.socket.emit(VERIFY_USER, login, pass, this.setUser);
   }
   setUser = ({ user, isUser, isActive }) => {
     console.log(user, isUser);
@@ -45,7 +48,7 @@ class judgeTool extends Component {
       this.setError('User name taken');
     } else {
       this.setError('');
-      this.socket.emit(USER_CONNECTED, user);
+      this.socket.emit(USER_CONNECTED, user, 'judge');
       this.setState({ user: user, setActive: isActive });
     }
   };
@@ -59,13 +62,11 @@ class judgeTool extends Component {
     this.setState({ pass: e.target.value });
   }
   choose(nameChoose) {
-    this.socket.emit(VOITING_SENT, nameChoose, this.state.user.id);
+    this.socket.emit(VOITING_SENT, nameChoose);
     this.setState({ choise: nameChoose, isDisable: true });
-    console.log(nameChoose);
   }
   change() {
     this.setState({ isDisable: false, choise: '' });
-    console.log(this.state.isDisable);
   }
   render() {
     const { login, error, user } = this.state;

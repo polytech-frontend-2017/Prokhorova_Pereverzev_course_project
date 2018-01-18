@@ -8,9 +8,9 @@ export class Store {
   }
   constructor() {
     this.competition = { title: 'Some title 1', date: null };
-    this.itTournir = 0; //итератор для id турнира (private)
+    this.itTournir = 1; //итератор для id турнира (private)
     this.idCompetitor = 0; //итератор для id соревнующегося (private)
-    this.activeTournir = null;
+    this.storeVersion = 0;
     this._handlers = [];
     this.tournirs = [
       {
@@ -19,7 +19,8 @@ export class Store {
         qiuRange: { min: 10, max: 6 },
         massRange: { min: 10, max: 60 },
         groups: [],
-        competitors: []
+        competitors: [],
+        fixed: false
       },
       {
         id: this.itTournir++,
@@ -27,7 +28,8 @@ export class Store {
         qiuRange: { min: 6, max: 1 },
         massRange: { min: 10, max: 90 },
         groups: [],
-        competitors: []
+        competitors: [],
+        fixed: false
       }
     ];
     this.competitors = [
@@ -38,7 +40,8 @@ export class Store {
         qiu: 10,
         age: 21,
         mass: 100,
-        id: this.idCompetitor++
+        id: this.idCompetitor++,
+        tournirsId: [1]
       },
       {
         name: 'Vadim',
@@ -47,7 +50,8 @@ export class Store {
         qiu: 2,
         age: 38,
         mass: 80,
-        id: this.idCompetitor++
+        id: this.idCompetitor++,
+        tournirsId: [2]
       },
       {
         name: 'Genadiy',
@@ -56,7 +60,8 @@ export class Store {
         qiu: 10,
         age: 68,
         mass: 88,
-        id: this.idCompetitor++
+        id: this.idCompetitor++,
+        tournirsId: [1]
       },
       {
         name: 'Vitaliy',
@@ -65,7 +70,8 @@ export class Store {
         qiu: 10,
         age: 23,
         mass: 70,
-        id: this.idCompetitor++
+        id: this.idCompetitor++,
+        tournirsId: [1]
       },
       {
         name: 'Elena',
@@ -74,12 +80,13 @@ export class Store {
         qiu: 6,
         age: 23,
         mass: 55,
-        id: this.idCompetitor++
+        id: this.idCompetitor++,
+        tournirsId: [2]
       }
     ];
     this.createCompetition = this.createCompetition.bind(this);
-    this.setActiveTournir = this.setActiveTournir.bind(this);
     this.addTournir = this.addTournir.bind(this);
+    this.fixedTournir = this.fixedTournir.bind(this);
     this.destroyTournir = this.destroyTournir.bind(this);
     this.addCompetitor = this.addCompetitor.bind(this);
     this.destroyCompetitor = this.destroyCompetitor.bind(this);
@@ -96,9 +103,9 @@ export class Store {
     // { ...this, competition: {Title,Date} } было бы в Redux
     this.emitChange();
   }
-  setActiveTournir(ActiveTournir) {
-    this.activeTournir = ActiveTournir;
-    this.emitChange();
+  fixedTournir(idTournir) {
+    let activeTournir = this.tournirs.find(t => t.id === idTournir);
+    activeTournir.fixed = !activeTournir.fixed;
   }
   addTournir(AgeMin, AgeMax, QiuMin, QiuMax, MassMin, MassMax) {
     this.tournirs.push({
@@ -107,9 +114,21 @@ export class Store {
       qiuRange: { min: QiuMin, max: QiuMax },
       massRange: { min: MassMin, max: MassMax },
       groups: [],
-      competitors: []
+      competitors: [],
+      fixed: false
     });
-    console.dir(this.tournirs);
+    this.competitors.map(competitor => {
+      for (let i = 0; i < this.tournirs.length; i++)
+        if (
+          competitor.qiu <= this.tournirs[i].qiuRange.min &&
+          competitor.qiu > this.tournirs[i].qiuRange.max &&
+          competitor.age >= this.tournirs[i].ageRange.min &&
+          competitor.age < this.tournirs[i].ageRange.max
+        )
+          competitor.tournirsId.push(this.tournirs[i].id);
+    });
+
+    console.log(this.tournirs);
     this.emitChange();
   }
   destroyTournir(id) {
@@ -124,8 +143,17 @@ export class Store {
       qiu: Qiu,
       age: Age,
       mass: Mass,
-      id: this.idCompetitor++
+      id: this.idCompetitor++,
+      tournirsId: []
     };
+    for (let i = 0; i < this.tournirs.length; i++)
+      if (
+        Competitor.qiu <= this.tournirs[i].qiuRange.min &&
+        Competitor.qiu > this.tournirs[i].qiuRange.max &&
+        Competitor.age >= this.tournirs[i].ageRange.min &&
+        Competitor.age < this.tournirs[i].ageRange.max
+      )
+        Competitor.tournirsId.push(this.tournirs[i].id);
     this.competitors.push(Competitor);
     this.emitChange();
   }
@@ -133,38 +161,32 @@ export class Store {
     this.competitors.splice(id, 1);
     this.emitChange();
   }
-  addGroup(pair) {
-    let activeTournir_ = this.tournirs.find(
-      t => t.id === this.activeTournir.id
-    );
+  addGroup(pair, idTournir) {
+    let activeTournir_ = this.tournirs.find(t => t.id === idTournir);
     activeTournir_.groups.push(pair);
     this.emitChange();
   }
-  destroyGroup(id) {
-    let activeTournir_ = this.tournirs.find(
-      t => t.id === this.activeTournir.id
-    );
+  destroyGroup(idPair, idTournir) {
+    let activeTournir_ = this.tournirs.find(t => t.id === idTournir);
     activeTournir_.groups = activeTournir_.groups.filter(
-      pair => pair.id !== id
+      pair => pair.id !== idPair
     );
     this.emitChange();
   }
-  destroyAllGroups() {
-    this.tournirs.find(t => t.id === this.activeTournir.id).groups = [];
+  destroyAllGroups(idTournir) {
+    this.tournirs.find(t => t.id === idTournir).groups = [];
     this.emitChange();
   }
-  addScore(id, man) {
-    const Pairs = this.tournirs.find(t => t.id === this.activeTournir.id)
-      .groups;
-    const pair = Pairs.find(p => p.id === id);
+  addScore(idPair, man, idTournir) {
+    const Pairs = this.tournirs.find(t => t.id === idTournir).groups;
+    const pair = Pairs.find(p => p.id === idPair);
     if (man === 1) pair.win1 += 1;
     else pair.win2 += 1;
     this.emitChange();
   }
-  destroyScore(id) {
-    const Pairs = this.tournirs.find(t => t.id === this.activeTournir.id)
-      .groups;
-    const pair = Pairs.find(p => p.id === id);
+  destroyScore(idPair, idTournir) {
+    const Pairs = this.tournirs.find(t => t.id === idTournir).groups;
+    const pair = Pairs.find(p => p.id === idPair);
     pair.win1 = 0;
     pair.win2 = 0;
     this.emitChange();

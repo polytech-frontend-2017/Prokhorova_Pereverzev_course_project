@@ -1,5 +1,4 @@
 const io = require('./index.js').io;
-const usersMenu = [];
 
 const {
   VERIFY_USER,
@@ -20,14 +19,16 @@ const {
 } = require('../Factories.js');
 
 let isactivePults = false;
-let connectedUsers = {};
-
+let connectedUsersMain = {};
+let connectedUsersJudge = {};
+let judgeVoices = {};
 module.exports = function(socket) {
   console.log('Socket Id:' + socket.id);
-  let sendVoiceToUserFromSender;
+  let addVoiceFromSender;
+  let changeVoiceFromSender;
   //Verify Username
-  socket.on(VERIFY_USER, (nickname, callback) => {
-    if (isUser(connectedUsers, nickname)) {
+  socket.on(VERIFY_USER, (nickname, password, callback) => {
+    if (isUser(connectedUsersMain, nickname, password)) {
       callback({ isUser: true, user: null });
     } else {
       callback({
@@ -39,47 +40,62 @@ module.exports = function(socket) {
   });
   //User Connects with username
   socket.on(USER_CONNECTED, (user, typePage) => {
-    connectedUsers = addUser(connectedUsers, user, typePage);
+    if (typePage === 'main')
+      connectedUsersMain = addUser(connectedUsersMain, user);
+    else connectedUsersJudge = addUser(connectedUsersJudge, user);
     socket.user = user;
-    sendVoiceToUserFromSender = sendVoiceToUser(user.name);
-    console.log(connectedUsers);
+    addVoiceFromSender = addVoice(user);
+    console.log('MAIN:');
+    console.log(connectedUsersMain);
+    console.log('JUDGES:');
+    console.log(connectedUsersJudge);
   });
   //Start voiting button
   socket.on(COMMUNITY_VOITING, (isActivePults, user) => {
     isactivePults = isActivePults;
     console.log('isActivePults: ' + isActivePults + ', by ' + user.id);
-    /*to broadcast ALL*/
-    io.emit(START_VOITING, isactivePults);
+    if (isActivePults) {
+      judgeVoices = {};
+      io.emit(START_VOITING);
+    } else {
+      io.emit(STOP_VOITING, isactivePults);
+      io.emit(VOICE_RECIEVED, judgeVoices);
+    }
   });
   //Stop voiting button
   socket.on(STOP_VOITING, (isActivePults, user) => {
-    isactivePults = isActivePults;
-    console.log('isActivePults: ' + isActivePults + ', by ' + user.id);
-    /*to broadcast ALL*/
-    io.emit(STOP_VOITING, isactivePults);
+    console.log('isActivePults stopped: ' + isActivePults + ', by ' + user.id);
   });
   //User disconnects
   socket.on('disconnect', () => {
     if ('user' in socket) {
       console.log('user : ' + socket.user.name + ' is disconnect');
-      connectedUsers = removeUser(connectedUsers, socket.user.name);
-      console.log(connectedUsers);
+      connectedUsersMain = removeUser(connectedUsersMain, socket.user.name);
+      connectedUsersJudge = removeUser(connectedUsersJudge, socket.user.name);
+      console.log('MAIN:');
+      console.log(connectedUsersMain);
+      console.log('JUDGES:');
+      console.log(connectedUsersJudge);
     }
   });
   //User logout
   socket.on(LOGOUT, () => {
     if ('user' in socket) {
       console.log('user : ' + socket.user.name + ' is disconnected');
-      connectedUsers = removeUser(connectedUsers, socket.user.name);
-      console.log(connectedUsers);
+      connectedUsersMain = removeUser(connectedUsersMain, socket.user.name);
+      connectedUsersJudge = removeUser(connectedUsersJudge, socket.user.name);
+      console.log('MAIN:');
+      console.log(connectedUsersMain);
+      console.log('JUDGES:');
+      console.log(connectedUsersJudge);
     }
   });
 
   //Community Voiting
-  socket.on(VOICE_RECIEVED, ({ voice, sender }) => {});
   //User-pult send voice-message
-  socket.on(VOITING_SENT, ({ userId, voice }) => {
-    sendVoiceToUserFromSender(userId, voice);
+  socket.on(VOITING_SENT, voice => {
+    addVoiceFromSender(voice);
+    console.log(judgeVoices);
   });
 };
 
@@ -96,14 +112,15 @@ function addUser(userList, user) {
 }
 
 /*
-* Return a function that will take a user id and message-voice
-* and then emit a broadcast to the user id.
-* @param sender {string} username of sender.
-* @return function(userId, voice)
+* Return a function that will take a sender user and message-voice
+* and then add a voice to the voice list.
+* @param sender {name:string, id: string} username of sender.
+* @return function(voice)
  */
-function sendVoiceToUser(sender) {
-  return (userId, voice) => {
-    io.emit(`${VOICE_RECIEVED}-${userId}`, createVoice(voice, sender));
+function addVoice(sender) {
+  return voice => {
+    console.log(`user ${sender.name} voited by ${voice}`);
+    judgeVoices = addUser(judgeVoices, createVoice({ voice, sender }));
   };
 }
 
@@ -125,6 +142,6 @@ function removeUser(userList, username) {
 * @param username {string}
 * @return userList {Object} Object with key value pairs of Users
  */
-function isUser(userList, username) {
+function isUser(userList, username, password) {
   return username in userList;
 }

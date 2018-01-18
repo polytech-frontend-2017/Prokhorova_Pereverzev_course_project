@@ -25,9 +25,10 @@ class Home extends Component {
       login: '',
       pass: '',
       error: '',
-      logout: false
+      logout: false,
+      closeMenuCompetitors: false
     };
-
+    this.activeTournir = this.store.tournirs[0];
     this.routes = {
       ListCompetitors: {
         component: ListCompetitors
@@ -45,11 +46,12 @@ class Home extends Component {
     this.socket.on('connect', () => {
       console.log('Connected');
     });
+    this.changeactiveTournir = this.changeactiveTournir.bind(this);
   }
   handlerRegister(e) {
     e.preventDefault();
-    const { login } = this.state;
-    this.socket.emit(VERIFY_USER, login, this.setUser);
+    const { login, pass } = this.state;
+    this.socket.emit(VERIFY_USER, login, pass, this.setUser);
   }
   /*
   * Sets the user in state
@@ -61,7 +63,7 @@ class Home extends Component {
       this.setError('User name taken');
     } else {
       this.setError('');
-      this.socket.emit(USER_CONNECTED, user, 'menu');
+      this.socket.emit(USER_CONNECTED, user, 'main');
       this.setState({ user: user });
       sessionStorage.setItem('socketUserName', user.name);
     }
@@ -109,15 +111,22 @@ class Home extends Component {
       this.socket.emit(
         VERIFY_USER,
         sessionStorage.getItem('socketUserName'),
+        'password',
         this.setUser
       );
+  }
+  changeactiveTournir(newTournir) {
+    this.activeTournir = newTournir;
+  }
+  toggleMenuCompetitors(click) {
+    this.setState({ closeMenuCompetitors: click });
   }
   render() {
     const config = this.routes[this.state.page];
     const PageComponent = config.component;
     const { login, error, user } = this.state;
     return (
-      <div>
+      <div onContextMenu={this.toggleMenuCompetitors.bind(this, true)}>
         {user ? (
           <Provider store={this.store}>
             <div className="App">
@@ -126,7 +135,12 @@ class Home extends Component {
                 logout={this.logout}
               />
               <main className={'main-container'}>
-                <PageComponent socket={this.socket} user={user} />
+                <PageComponent
+                  socket={this.socket}
+                  user={user}
+                  activeTournir={this.activeTournir}
+                  changeactiveTournir={this.changeactiveTournir}
+                />
               </main>
             </div>
           </Provider>

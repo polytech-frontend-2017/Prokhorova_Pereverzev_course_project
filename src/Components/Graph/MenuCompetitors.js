@@ -20,6 +20,7 @@ class MenuCompetitors extends Component {
       rtl: false,
       searchable: true
     };
+
     this.select = '';
     this.updateValue = this.updateValue.bind(this);
     this.switchName = this.switchName.bind(this);
@@ -45,9 +46,8 @@ class MenuCompetitors extends Component {
   }
   render() {
     const options = this.props.currCompetitors.map(
-      c => (c = { label: c.name + ' ' + c.surname, value: c })
+      c => (c = { label: c.surname + ' ' + c.name, value: c })
     );
-    console.log(this.props.x + ' ' + this.props.y);
     return (
       <div
         className={'select-menu'}
@@ -58,6 +58,8 @@ class MenuCompetitors extends Component {
         }}
       >
         <Select
+          matchPos={'start'}
+          matchProp={'any'}
           className={'Select'}
           size={'210px'}
           id="name-select"
@@ -66,7 +68,7 @@ class MenuCompetitors extends Component {
           }}
           onBlurResetsInput={false}
           onSelectResetsInput={false}
-          autoFocus
+          autoFocus={true}
           options={options}
           clearable={this.state.clearable}
           name="selected-name"

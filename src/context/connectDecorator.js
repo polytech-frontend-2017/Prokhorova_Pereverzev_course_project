@@ -15,17 +15,13 @@ export default function connectDecorator(
         );
         return acc;
       }, {});
-      /*this.context.store.addListener(() => this.setState({
-                storeVersion: this.state.storeVersion++,
-            }));*/
+      this.context.store.addListener(
+        () => (this.context.store.storeVersion += 1)
+      );
     }
-    componentWillMount() {
-      /*this.setState({
-                storeVersion: 0
-            });*/
-    }
+    componentWillMount() {}
     render() {
-      //console.log("Store v: "+OriginalComponent.name+" "+this.state.storeVersion); //выдает warning(no-op)
+      //console.log("Store v: "+OriginalComponent.name+" "+this.context.store.storeVersion); //выдает warning(no-op)
       return (
         <OriginalComponent
           {...this.props}
