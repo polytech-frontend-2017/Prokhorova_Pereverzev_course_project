@@ -32,10 +32,13 @@ class RegisterMenu extends Component {
     return (
       <div className="container-login">
         <form
+          id={'login'}
+          action="/"
+          method="post"
           onSubmit={this.handlerRegister.bind(this)}
           className={'form-login'}
         >
-          <label className="container-label-login">Регистрация</label>
+          <label className="container-label-login">Вход</label>
           <input
             className="container-input-login"
             size={15.2}
@@ -58,7 +61,7 @@ class RegisterMenu extends Component {
           />
           <div className={'error'}>{error ? error : null}</div>
           <button
-            className="container-input-login submit-btn-login"
+            className="container-input-login submit-btn-login login-btns"
             type={'submit'}
           >
             Войти

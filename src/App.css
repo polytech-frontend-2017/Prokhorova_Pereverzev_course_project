@@ -18,12 +18,6 @@ body,
   flex-direction: column;
   justify-content: space-between;
 }
-.App {
-  flex-wrap: wrap;
-}
-.router-div > div {
-  min-height: 100%;
-}
 .App-logo {
   height: 1500px;
   width: 100px;
@@ -32,72 +26,46 @@ body,
   margin: auto;
   display: block;
 }
-.App-header {
-  background-color: #444444;
-  color: white;
-  height: 40px;
-  padding: 10px;
-  margin: auto;
-  width: 100%;
-  text-align: center;
-}
-.App-title {
-  font-size: 1em;
-  text-transform: uppercase;
-}
-.App-intro {
-  font-size: large;
-}
-.container {
-  margin: 15px auto;
-  text-align: center;
-  position: relative;
-  padding: 15px;
-  border: none;
-  background: #444444;
-  width: 300px;
-  border-radius: var(--theme-primary-border-radius);
-}
-.container-label {
-  font-size: 14pt;
-  padding: 15px;
-  color: #fff;
-  font-family: sans-serif;
-  text-transform: uppercase;
-}
-.container-input {
-  font: 12pt sans-serif;
-  width: 250px;
-  height: 30px;
-  margin: 10px 15px;
-  background: #444444;
-  color: #dfdfdf;
-  border: solid 1px;
-  border-radius: var(--theme-primary-border-radius);
-}
-.submit-btn {
-  background-color: var(--theme-primary-color);
-  border: none;
-  color: white;
-  padding: 5px 10px;
-  text-decoration: none;
-  height: 40px;
-  text-transform: uppercase;
-  border-radius: var(--theme-primary-border-radius);
-}
-.submit-btn:hover {
-  background-color: var(--theme-primary-color-btn-hover);
-}
-.reate-competition-form {
-  border-radius: var(--theme-primary-border-radius);
-}
 .main-container {
   width: 100%;
   display: flex;
   flex-direction: row;
   flex-grow: inherit;
+  justify-content: flex-start;
+  align-items: flex-start;
 }
-.create-comp-menu {
-  margin: 0 auto;
-  width: 100%;
+.router-div > div {
+  min-height: 100%;
+}
+.login-signin {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--theme-primary-color-gray);
+  margin: var(--theme-primary-margin);
+}
+.tab-group {
+  display: grid;
+  margin: 0;
+  height: 70px;
+  grid-template-columns: repeat(2, 0.5fr);
+  padding: var(--theme-primary-color-btn-disabled);
+}
+.login-signup-li {
+  list-style-type: none;
+  background-color: var(--theme-primary-color-gray);
+  padding: var(--theme-primary-color-btn-disabled);
+  text-align: center;
+}
+.active-li {
+  background-color: #c22b2a;
+}
+.login-signup-a {
+  padding: var(--theme-primary-padding);
+  text-decoration: none;
+  color: white;
+  transition: 0.5s ease;
+  display: inline-block;
+  text-transform: uppercase;
+  font-size: var(--theme-primary-font-header-size);
+  font-family: var(--theme-primary-font-family);
 }

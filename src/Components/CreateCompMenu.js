@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import connectDecorator from '../context/connectDecorator';
-import '../App.css';
+import './CreateCompMenu.css';
 
 class CreateCompMenu extends Component {
   constructor(props) {
@@ -18,7 +18,6 @@ class CreateCompMenu extends Component {
     this.setState({ date: e.target.value });
   }
   handlerCreateCompetition(e) {
-    //must be ajax to server
     e.preventDefault();
     console.log(this.state.title + ' ' + this.state.date);
     this.props.createCompetition(this.state.title, this.state.date);
@@ -30,37 +29,34 @@ class CreateCompMenu extends Component {
         <header className="App-header">
           <h1 className="App-title">Менеджер Соревнований</h1>
         </header>
-        <div className="container">
-          <form
-            onSubmit={this.handlerCreateCompetition.bind(this)}
-            className={'create-competition-form'}
-          >
-            <label className="container-label">Соревнование</label>
-            {/*this.props.tournirsCount > 0 && <h3>Has {this.props.tournirsCount} tournirs</h3>*/}
-            <input
-              className="container-input"
-              size={this.state.size}
-              type="text"
-              name="title"
-              placeholder="Наименование"
-              required
-              defaultValue={this.state.title}
-              onInput={this.handleTitleChange.bind(this)}
-            />
-            <input
-              className="container-input"
-              size={this.state.size}
-              type="date"
-              name="date"
-              required
-              defaultValue={this.state.date}
-              onInput={this.handleDateChange.bind(this)}
-            />
-            <button className="container-input submit-btn" type={'submit'}>
-              Создать
-            </button>
-          </form>
-        </div>
+        <form
+          onSubmit={this.handlerCreateCompetition.bind(this)}
+          className={'create-competition-form'}
+        >
+          <label className="container-label">Соревнование</label>
+          <input
+            className="container-input"
+            size={this.state.size}
+            type="text"
+            name="title"
+            placeholder="Наименование"
+            required
+            defaultValue={this.state.title}
+            onInput={this.handleTitleChange.bind(this)}
+          />
+          <input
+            className="container-input"
+            size={this.state.size}
+            type="date"
+            name="date"
+            required
+            defaultValue={this.state.date}
+            onInput={this.handleDateChange.bind(this)}
+          />
+          <button className="container-input submit-btn" type={'submit'}>
+            Создать
+          </button>
+        </form>
       </div>
     );
   }

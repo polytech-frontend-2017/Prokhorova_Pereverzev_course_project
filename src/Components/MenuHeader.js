@@ -62,7 +62,9 @@ class MenuHeader extends Component {
                   })}
                   onClick={this.ShowOrHideForm.bind(this, menuItem.name)}
                 >
-                  <a className={'header-a'}>{menuItem.name}</a>
+                  <a className={'header-a'} href={'#' + escape(menuItem.name)}>
+                    {menuItem.name}
+                  </a>
                 </li>
               </div>
             );

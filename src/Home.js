@@ -9,6 +9,7 @@ import ListTournirs from './Components/ListTournirs';
 import Rounds from './Components/Rounds';
 import NoTournirs from './Components/NoTournirs';
 import LoginPage from './Components/LoginPage';
+import SignUpPage from './Components/SignUpPage';
 import io from 'socket.io-client';
 import { PORT, hostname } from './server/globalConsts';
 
@@ -30,7 +31,8 @@ class Home extends Component {
       closeMenuCompetitors: false,
       error: '',
       title: '',
-      date: null
+      date: null,
+      toggleLogin: true
     };
     this.activeTournir = null;
     if (this.state.user !== null) {
@@ -61,6 +63,8 @@ class Home extends Component {
     this.changeactiveTournir = this.changeactiveTournir.bind(this);
     this.changeDataCompetition = this.changeDataCompetition.bind(this);
     this.handlerRegister = this.handlerRegister.bind(this);
+    this.loginForms = this.loginForms.bind(this);
+    this.signupForm = this.signupForm.bind(this);
   }
   handlerRegister(login, pass) {
     this.socket.emit(VERIFY_USER, login, pass, this.setUser);
@@ -77,7 +81,7 @@ class Home extends Component {
   setUser = ({ user, isUser }) => {
     console.log(user, isUser);
     if (isUser) {
-      this.setError('User name taken');
+      this.setError('Неверный логин или пароль.');
     } else {
       this.setError('');
       this.store = new Store();
@@ -139,10 +143,16 @@ class Home extends Component {
   toggleMenuCompetitors(click) {
     this.setState({ closeMenuCompetitors: click });
   }
+  loginForms() {
+    this.setState({ toggleLogin: true });
+  }
+  signupForm() {
+    this.setState({ toggleLogin: false });
+  }
   render() {
     const config = this.routes[this.state.page];
     const PageComponent = config.component;
-    const { user, title, date, error } = this.state;
+    const { user, title, date, error, toggleLogin } = this.state;
     return (
       <div onContextMenu={this.toggleMenuCompetitors.bind(this, true)}>
         {user ? (
@@ -167,7 +177,41 @@ class Home extends Component {
           </Provider>
         ) : (
           <main className={'main-container main'}>
-            <LoginPage handlerRegister={this.handlerRegister} error={error} />
+            <div className={'login-signin'}>
+              <ul className="tab-group">
+                <li
+                  className={
+                    'login-signup-li ' + (toggleLogin ? 'active-li' : '')
+                  }
+                  onClick={this.loginForms}
+                >
+                  <a className={'login-signup-a'} href={'#login'}>
+                    Log In
+                  </a>
+                </li>
+                <li
+                  className={
+                    'login-signup-li ' + (!toggleLogin ? 'active-li' : '')
+                  }
+                  onClick={this.signupForm}
+                >
+                  <a className={'login-signup-a'} href={'#signup'}>
+                    Sign Up
+                  </a>
+                </li>
+              </ul>
+              {toggleLogin ? (
+                <LoginPage
+                  handlerRegister={this.handlerRegister}
+                  error={error}
+                />
+              ) : (
+                <SignUpPage
+                  handlerRegister={this.handlerRegister}
+                  error={error}
+                />
+              )}
+            </div>
           </main>
         )}
       </div>

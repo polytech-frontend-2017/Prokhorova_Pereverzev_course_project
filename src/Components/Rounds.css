@@ -1,9 +1,9 @@
 .container-rounds {
   width: 100%;
-  padding: 20px;
+  padding: var(--theme-primary-padding);
 }
 .competitors-table-rounds {
-  padding: 20px;
+  padding: var(--theme-primary-padding);
 }
 .container-rounds-list {
   width: 100%;
@@ -19,8 +19,8 @@
   float: left;
   width: 100%;
   text-align: left;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding-top: var(--theme-primary-padding);
+  padding-bottom: var(--theme-primary-padding);
   background: #fff;
   display: inline-block;
 }
@@ -48,11 +48,11 @@
   position: fixed;
   bottom: 20px;
   left: 50%;
-  padding: 20px;
+  padding: var(--theme-primary-padding);
   transform: translateX(-50%);
 }
 .btn-rounds {
-  padding: 20px 10px;
+  padding: var(--theme-primary-padding) 10px;
   font-size: 12pt;
   margin: 5px 15px;
   width: 160px;

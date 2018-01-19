@@ -1,6 +1,6 @@
 .baseDiv {
-  margin: 0 auto;
-  padding: 20px;
+  margin: var(--theme-primary-margin);
+  padding: var(--theme-primary-padding);
   background-color: transparent;
   color: #000;
   display: block;
@@ -17,10 +17,10 @@
   text-align: center;
 }
 .h3-title {
-  font-size: 20px;
+  font-size: var(--theme-primary-font-header-size);
   font-weight: 400;
   font-style: normal;
-  font-family: Tahoma, Sans-Serif;
+  font-family: var(--theme-primary-font-family);
   text-transform: uppercase;
   margin: auto;
 }
@@ -35,8 +35,9 @@
   animation: float 5s infinite;
 }
 .th-tablse {
-  font-size: 16px;
-  font-weight: 100;
+  font-size: var(--theme-primary-font-size);
+  font-family: var(--theme-primary-font-family);
+  font-style: normal;
   padding: 10px;
   text-align: left;
   background: #1b1e24;
@@ -85,6 +86,6 @@
   padding: 5px;
   text-align: left;
   vertical-align: middle;
-  font-weight: 300;
-  font-size: 16px;
+  font-size: var(--theme-primary-font-size);
+  font-family: var(--theme-primary-font-family);
 }
