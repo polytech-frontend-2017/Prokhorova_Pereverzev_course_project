@@ -33,7 +33,6 @@ class Graph extends Component {
   linkHorizontal(link) {
     const parentX = this.props.width - link.parent.y + 10,
       targetX = this.props.width - link.y + 210;
-
     let d =
       'M ' +
       parentX +

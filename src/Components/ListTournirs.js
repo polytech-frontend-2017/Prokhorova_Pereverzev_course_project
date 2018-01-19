@@ -44,6 +44,8 @@ class ListTournirs extends Component {
       minMass: '',
       maxMass: ''
     });
+    if (this.props.activeTournir === null)
+      this.props.changeactiveTournir(this.props.tournirs[0]);
     this.focus();
   }
   handleDestroy(id) {
@@ -51,7 +53,7 @@ class ListTournirs extends Component {
   }
   render() {
     return (
-      <div>
+      <div className={'baseDiv'}>
         <article className={'add-form'}>
           <form className={'formInput'} onSubmit={this.handleAddTournir}>
             <h1 className={'formInput-h1'}>Добавить турнир</h1>

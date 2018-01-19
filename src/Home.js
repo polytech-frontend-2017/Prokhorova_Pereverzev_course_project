@@ -7,28 +7,37 @@ import Provider from './context/Provider.js';
 import ListCompetitors from './Components/ListCompetitors.js';
 import ListTournirs from './Components/ListTournirs';
 import Rounds from './Components/Rounds';
+import NoTournirs from './Components/NoTournirs';
+import LoginPage from './Components/LoginPage';
 import io from 'socket.io-client';
+import { PORT, hostname } from './server/globalConsts';
+
 import { USER_CONNECTED, LOGOUT, VERIFY_USER } from './Events';
 
-const socketUrl = 'http://93.100.173.116:3231';
+const socketUrl = `http://${hostname}:${PORT}`;
 
 class Home extends Component {
   constructor() {
     super();
     this.setUser = this.setUser.bind(this);
-    this.store = new Store();
     this.socket = io(socketUrl);
+    this.store = null;
     this.state = {
       page: 'CreateCompMenu',
       socket: null,
       user: sessionStorage.getItem('socketUserName') || null,
-      login: '',
-      pass: '',
-      error: '',
       logout: false,
-      closeMenuCompetitors: false
+      closeMenuCompetitors: false,
+      error: '',
+      title: '',
+      date: null
     };
-    this.activeTournir = this.store.tournirs[0];
+    this.activeTournir = null;
+    if (this.state.user !== null) {
+      this.store = new Store();
+      if (this.store.tournirs.length > 0)
+        this.activeTournir = this.store.tournirs[0];
+    }
     this.routes = {
       ListCompetitors: {
         component: ListCompetitors
@@ -41,17 +50,25 @@ class Home extends Component {
       },
       Rounds: {
         component: Rounds
+      },
+      NoTournirs: {
+        component: NoTournirs
       }
     };
     this.socket.on('connect', () => {
       console.log('Connected');
     });
     this.changeactiveTournir = this.changeactiveTournir.bind(this);
+    this.changeDataCompetition = this.changeDataCompetition.bind(this);
+    this.handlerRegister = this.handlerRegister.bind(this);
   }
-  handlerRegister(e) {
-    e.preventDefault();
-    const { login, pass } = this.state;
+  handlerRegister(login, pass) {
     this.socket.emit(VERIFY_USER, login, pass, this.setUser);
+  }
+
+  changeDataCompetition(title_, date_) {
+    console.log(title_ + ' ' + date_);
+    this.setState({ title: title_, date: date_ });
   }
   /*
   * Sets the user in state
@@ -63,8 +80,15 @@ class Home extends Component {
       this.setError('User name taken');
     } else {
       this.setError('');
+      this.store = new Store();
+      if (this.store.tournirs.length > 0)
+        this.activeTournir = this.store.tournirs[0];
       this.socket.emit(USER_CONNECTED, user, 'main');
-      this.setState({ user: user });
+      this.setState({
+        user: user,
+        title: this.store.competition.title,
+        date: this.store.competition.date
+      });
       sessionStorage.setItem('socketUserName', user.name);
     }
   };
@@ -78,7 +102,6 @@ class Home extends Component {
     console.log('logout');
     sessionStorage.removeItem('socketUserName');
   };
-
   changeShow(num) {
     switch (num) {
       case 'Соревнующиеся':
@@ -91,7 +114,8 @@ class Home extends Component {
         this.setState({ page: 'CreateCompMenu' });
         break;
       case 'Раунды':
-        this.setState({ page: 'Rounds' });
+        if (this.activeTournir !== null) this.setState({ page: 'Rounds' });
+        else this.setState({ page: 'NoTournirs' });
         break;
       case 'Выход':
         this.logout();
@@ -99,12 +123,6 @@ class Home extends Component {
       default:
         this.setState({ page: 'Rounds' });
     }
-  }
-  handleLoginChange(e) {
-    this.setState({ login: e.target.value });
-  }
-  handlePassChange(e) {
-    this.setState({ pass: e.target.value });
   }
   componentWillMount() {
     if (sessionStorage.getItem('socketUserName'))
@@ -124,18 +142,21 @@ class Home extends Component {
   render() {
     const config = this.routes[this.state.page];
     const PageComponent = config.component;
-    const { login, error, user } = this.state;
+    const { user, title, date, error } = this.state;
     return (
       <div onContextMenu={this.toggleMenuCompetitors.bind(this, true)}>
         {user ? (
           <Provider store={this.store}>
             <div className="App">
               <MenuHeader
+                date={date}
+                title={title}
                 changeShow={this.changeShow.bind(this)}
                 logout={this.logout}
               />
-              <main className={'main-container'}>
+              <main className={'main-container main'}>
                 <PageComponent
+                  changeDataCompetition={this.changeDataCompetition}
                   socket={this.socket}
                   user={user}
                   activeTournir={this.activeTournir}
@@ -145,35 +166,9 @@ class Home extends Component {
             </div>
           </Provider>
         ) : (
-          <div className="container">
-            <form onSubmit={this.handlerRegister.bind(this)}>
-              <label className="container-label">Регистрация</label>
-              <input
-                className="container-input"
-                size={15.2}
-                type="text"
-                name="login"
-                placeholder="nickname"
-                required
-                defaultValue={login}
-                onInput={this.handleLoginChange.bind(this)}
-              />
-              <input
-                className="container-input"
-                size={this.state.pass}
-                type="password"
-                name="pass"
-                placeholder="password"
-                required
-                defaultValue={this.state.pass}
-                onInput={this.handlePassChange.bind(this)}
-              />
-              <div className={'error'}>{error ? error : null}</div>
-              <button className="container-input submit-btn" type={'submit'}>
-                Войти
-              </button>
-            </form>
-          </div>
+          <main className={'main-container main'}>
+            <LoginPage handlerRegister={this.handlerRegister} error={error} />
+          </main>
         )}
       </div>
     );

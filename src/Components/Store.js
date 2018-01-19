@@ -126,6 +126,7 @@ export class Store {
           competitor.age < this.tournirs[i].ageRange.max
         )
           competitor.tournirsId.push(this.tournirs[i].id);
+      return true;
     });
 
     console.log(this.tournirs);

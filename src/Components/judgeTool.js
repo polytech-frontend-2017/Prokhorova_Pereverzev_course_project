@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import LoginPage from './LoginPage';
 import './judgeTool.css';
 import '../App.css';
 import {
@@ -8,9 +9,10 @@ import {
   STOP_VOITING,
   VOITING_SENT
 } from '../Events';
+import { PORT, hostname } from '../server/globalConsts';
 import io from 'socket.io-client';
 
-const socketUrl = 'http://93.100.173.116:3231';
+const socketUrl = `http://${hostname}:${PORT}`;
 class judgeTool extends Component {
   constructor(props) {
     super(props);
@@ -19,8 +21,6 @@ class judgeTool extends Component {
       isDisable: false,
       setActive: false,
       user: null,
-      login: '',
-      pass: '',
       error: ''
     };
     this.socket = io(socketUrl);
@@ -35,15 +35,13 @@ class judgeTool extends Component {
     });
     this.choose = this.choose.bind(this);
     this.change = this.change.bind(this);
+    this.handlerRegister = this.handlerRegister.bind(this);
   }
 
-  handlerRegister(e) {
-    e.preventDefault();
-    const { login, pass } = this.state;
+  handlerRegister(login, pass) {
     this.socket.emit(VERIFY_USER, login, pass, this.setUser);
   }
   setUser = ({ user, isUser, isActive }) => {
-    console.log(user, isUser);
     if (isUser) {
       this.setError('User name taken');
     } else {
@@ -55,12 +53,6 @@ class judgeTool extends Component {
   setError = error => {
     this.setState({ error });
   };
-  handleLoginChange(e) {
-    this.setState({ login: e.target.value });
-  }
-  handlePassChange(e) {
-    this.setState({ pass: e.target.value });
-  }
   choose(nameChoose) {
     this.socket.emit(VOITING_SENT, nameChoose);
     this.setState({ choise: nameChoose, isDisable: true });
@@ -69,7 +61,7 @@ class judgeTool extends Component {
     this.setState({ isDisable: false, choise: '' });
   }
   render() {
-    const { login, error, user } = this.state;
+    const { error, user } = this.state;
     return (
       <div>
         {user ? (
@@ -97,35 +89,9 @@ class judgeTool extends Component {
             </button>
           </div>
         ) : (
-          <div className="container">
-            <form onSubmit={this.handlerRegister.bind(this)}>
-              <label className="container-label">Регистрация</label>
-              <input
-                className="container-input"
-                size={15.2}
-                type="text"
-                name="login"
-                placeholder="nickname"
-                required
-                defaultValue={login}
-                onInput={this.handleLoginChange.bind(this)}
-              />
-              <input
-                className="container-input"
-                size={this.state.pass}
-                type="password"
-                name="pass"
-                placeholder="password"
-                required
-                defaultValue={this.state.pass}
-                onInput={this.handlePassChange.bind(this)}
-              />
-              <div className={'error'}>{error ? error : null}</div>
-              <button className="container-input submit-btn" type={'submit'}>
-                Войти
-              </button>
-            </form>
-          </div>
+          <main className={'main-container main'}>
+            <LoginPage handlerRegister={this.handlerRegister} error={error} />
+          </main>
         )}
       </div>
     );

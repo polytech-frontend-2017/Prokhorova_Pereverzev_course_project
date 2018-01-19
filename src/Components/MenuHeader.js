@@ -15,7 +15,9 @@ class MenuHeader extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeMenu: 'Соревнование'
+      activeMenu: 'Соревнование',
+      title: this.props.title,
+      date: this.props.date
     };
     this.ShowOrHideForm = this.ShowOrHideForm.bind(this);
     this.menu = [
@@ -26,16 +28,27 @@ class MenuHeader extends Component {
       { name: 'Выход' }
     ];
   }
+  componentWillReceiveProps(newProps) {
+    this.setState({
+      title: newProps.title,
+      date: newProps.date
+    });
+  }
   ShowOrHideForm(name) {
     this.setState({ activeMenu: name });
     this.props.changeShow(name);
   }
   render() {
+    const { title, date } = this.state;
+    let Title = title + ' / ' + date;
+    if (Title.length > 20) {
+      Title = Title.slice(0, 16) + '...';
+    }
     return (
       <div className={'divStyle'}>
         <img src={logo} className={'Applogo'} alt="logo" />
-        <div className={'titletext'}>
-          {this.props.competitionName + ' /' + this.props.competitionDate}
+        <div className={'titletext'} title={title + ' / ' + date}>
+          {Title}
         </div>
         <ul className={'header-ul'}>
           {this.menu.map((menuItem, i) => {
@@ -59,7 +72,4 @@ class MenuHeader extends Component {
     );
   }
 }
-export default connectDecorator(MenuHeader, [], store => ({
-  competitionName: store.competition.title,
-  competitionDate: store.competition.date
-}));
+export default connectDecorator(MenuHeader, [], store => ({}));

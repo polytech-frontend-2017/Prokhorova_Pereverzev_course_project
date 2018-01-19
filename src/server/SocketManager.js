@@ -11,12 +11,7 @@ const {
   VOICE_RECIEVED
 } = require('../Events.js');
 
-const {
-  createUser,
-  createStartVoiting,
-  CreateVoiting,
-  createVoice
-} = require('../Factories.js');
+const { createUser, createVoice } = require('../Factories.js');
 
 let isactivePults = false;
 let connectedUsersMain = {};
@@ -25,7 +20,6 @@ let judgeVoices = {};
 module.exports = function(socket) {
   console.log('Socket Id:' + socket.id);
   let addVoiceFromSender;
-  let changeVoiceFromSender;
   //Verify Username
   socket.on(VERIFY_USER, (nickname, password, callback) => {
     if (isUser(connectedUsersMain, nickname, password)) {

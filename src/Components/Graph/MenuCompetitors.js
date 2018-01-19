@@ -52,9 +52,8 @@ class MenuCompetitors extends Component {
       <div
         className={'select-menu'}
         style={{
-          top: this.props.y,
-          left: this.props.x,
-          position: 'relative'
+          top: this.props.y + 110 + 'px',
+          left: this.props.x + 350 + 'px'
         }}
       >
         <Select

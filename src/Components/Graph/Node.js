@@ -1,26 +1,26 @@
 import React, { Component } from 'react';
 import './Node.css';
 
+function getNames(pair) {
+  let Name_1 = '',
+    Name_2 = '';
+  if (pair.name1 && pair.name2) {
+    if (pair.name1.name) Name_1 = pair.name1.name.substr(0, 1) + '.';
+    if (pair.name2.name) Name_2 = pair.name2.name.substr(0, 1) + '.';
+    Name_1 = pair.name1.surname + ' ' + Name_1;
+    Name_2 = pair.name2.surname + ' ' + Name_2;
+  }
+  return { Name_1, Name_2 };
+}
 class Node extends Component {
   constructor(props) {
     super(props);
-    let Name_1 = '',
-      Name_2 = '';
-    if (props.pair.name1 && props.pair.name2) {
-      props.pair.name1.name
-        ? (Name_1 = props.pair.name1.name.substr(0, 1) + '.')
-        : '';
-      props.pair.name2.name
-        ? (Name_2 = props.pair.name2.name.substr(0, 1) + '.')
-        : '';
-      Name_1 = props.pair.name1.surname + ' ' + Name_1;
-      Name_2 = props.pair.name2.surname + ' ' + Name_2;
-    }
+    let Names = getNames(props.pair);
     this.state = {
       widthRectComp: this.props.width - 30,
       heightRectComp: this.props.height / 2 - 15,
-      firstName: Name_1,
-      secondName: Name_2,
+      firstName: Names.Name_1,
+      secondName: Names.Name_2,
       win1: props.pair.win1,
       win2: props.pair.win2,
       active: false
@@ -31,18 +31,7 @@ class Node extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    let Name_1 = '',
-      Name_2 = '';
-    if (newProps.pair.name1 && newProps.pair.name2) {
-      newProps.pair.name1.name
-        ? (Name_1 = newProps.pair.name1.name.substr(0, 1) + '.')
-        : '';
-      newProps.pair.name2.name
-        ? (Name_2 = newProps.pair.name2.name.substr(0, 1) + '.')
-        : '';
-      Name_1 = newProps.pair.name1.surname + ' ' + Name_1;
-      Name_2 = newProps.pair.name2.surname + ' ' + Name_2;
-    }
+    let Names = getNames(newProps.pair);
     let win1 = newProps.pair.win1;
     let win2 = newProps.pair.win2;
     if (this.props.judgeVoices.id === this.props.id) {
@@ -52,8 +41,8 @@ class Node extends Component {
     const active = newProps.activePair === newProps.id;
 
     this.setState({
-      firstName: Name_1,
-      secondName: Name_2,
+      firstName: Names.Name_1,
+      secondName: Names.Name_2,
       win1: win1,
       win2: win2,
       active: active
