@@ -9,7 +9,7 @@
   fill: white;
 }
 .inner-g:hover {
-  fill: #dfdfdf;
+  fill: var(--theme-white-primary-color);
 }
 .activePair {
   stroke-width: 3px;

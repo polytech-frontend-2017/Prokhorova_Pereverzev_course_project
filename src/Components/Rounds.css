@@ -12,6 +12,8 @@
   flex-direction: column;
   display: flex;
   justify-content: flex-start;
+  overflow: scroll;
+  overflow-x: hidden;
 }
 .list-competitor {
   float: left;
@@ -21,6 +23,10 @@
   padding-bottom: 10px;
   background: #fff;
   display: inline-block;
+}
+.list-competitor-rounds {
+  padding: 10px 10px;
+  float: left;
 }
 .rounds-main {
   display: grid;
@@ -67,4 +73,17 @@
 }
 .not-fixed {
   background-color: var(--theme-green-btn-primary-color);
+}
+
+.startBtn:hover {
+  background-color: var(--theme-green-btn-primary-hover);
+}
+.stopBtn:hover {
+  background-color: var(--theme-primary-color-btn-hover);
+}
+.fixed:hover {
+  background-color: var(--theme-primary-color-btn-hover);
+}
+.not-fixed:hover {
+  background-color: var(--theme-green-btn-primary-hover);
 }

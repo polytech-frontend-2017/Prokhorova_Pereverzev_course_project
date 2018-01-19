@@ -15,7 +15,11 @@ body {
 }
 :root {
   --theme-primary-color: rgb(182, 0, 2);
+  --theme-primary-color-btn-hover: #ff0022;
+  --theme-primary-color-btn-disabled: rgb(117, 113, 109);
   --theme-green-btn-primary-color: rgb(51, 98, 32);
+  --theme-green-btn-primary-hover: rgb(75, 143, 46);
+  --theme-white-primary-color: #ebebeb;
   --theme-primary-border-radius: 3px;
   --theme-primary-border-radius-btn-rounds: 50px;
 }

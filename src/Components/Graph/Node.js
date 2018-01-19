@@ -4,7 +4,7 @@ import './Node.css';
 function getNames(pair) {
   let Name_1 = '',
     Name_2 = '';
-  if (pair.name1 && pair.name2) {
+  if (pair) {
     if (pair.name1.name) Name_1 = pair.name1.name.substr(0, 1) + '.';
     if (pair.name2.name) Name_2 = pair.name2.name.substr(0, 1) + '.';
     Name_1 = pair.name1.surname + ' ' + Name_1;
@@ -21,8 +21,8 @@ class Node extends Component {
       heightRectComp: this.props.height / 2 - 15,
       firstName: Names.Name_1,
       secondName: Names.Name_2,
-      win1: props.pair.win1,
-      win2: props.pair.win2,
+      win1: props.pair ? props.pair.win1 : 0,
+      win2: props.pair ? props.pair.win2 : 0,
       active: false
     };
     this.changeNameFirst = this.changeNameFirst.bind(this);
@@ -56,15 +56,7 @@ class Node extends Component {
   }
   showChoose(num, event) {
     event.preventDefault();
-    let y;
-    switch (num) {
-      case 1:
-        y = this.props.y + 10;
-        break;
-      default:
-        y = this.props.y + this.props.height / 2;
-    }
-    this.props.showMenu(this.props.x, y, this.props.id, num);
+    this.props.showMenu(event.clientX, event.clientY, this.props.id, num);
   }
 
   render() {

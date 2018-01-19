@@ -311,7 +311,8 @@ class Rounds extends Component {
       root: fillTree.root,
       d3tree: fillTree.d3tree,
       nodes: fillTree.nodes,
-      links: fillTree.links
+      links: fillTree.links,
+      fixed: currentTournir.fixed
     });
   }
   filterCompetitors(currentTournir) {
@@ -321,7 +322,7 @@ class Rounds extends Component {
   }
   componentWillMount() {
     let currCompetitors = this.filterCompetitors(this.props.activeTournir);
-    for (let i = 0; i < 20; i++) currCompetitors.push(currCompetitors[0]);
+    /*for (let i = 0; i < 30; i++) currCompetitors.push(currCompetitors[0]);*/
     let level = 0;
     if (currCompetitors.length !== 0)
       level = Math.ceil(Math.log2(Math.ceil(currCompetitors.length / 2)));
@@ -358,11 +359,11 @@ class Rounds extends Component {
       links
     } = this.state;
     const widthGraph = levels * 300,
-      heightGraph = 2 ** levels * 150;
-    console.log(judgeVoices);
+      heightGraph = 2 ** levels * 130;
+    const Height = window.innerHeight - 111;
     return (
       <div className={'rounds-main'}>
-        <div className={'container-rounds-list'}>
+        <div className={'container-rounds-list'} style={{ height: Height }}>
           <select
             className={'container-rounds'}
             onChange={this.currentSets}
@@ -371,7 +372,6 @@ class Rounds extends Component {
             {this.props.tournirs.map((tournir, i) => (
               <option key={i} value={tournir.id}>
                 {tournir.id +
-                  1 +
                   '. Кю: ' +
                   tournir.qiuRange.min +
                   '-' +
@@ -387,8 +387,8 @@ class Rounds extends Component {
             <table className={'table-competitor-rounds'}>
               <tbody>
                 {currentCompetitors.map((competitor, i) => (
-                  <tr className={'list-competitor-rounds'} key={i}>
-                    <td>
+                  <tr key={i}>
+                    <td className={'list-competitor-rounds'}>
                       {i +
                         1 +
                         '. ' +
@@ -407,7 +407,11 @@ class Rounds extends Component {
           className={'Graph'}
           style={{ width: window.innerWidth - 300 + 'px' }}
         >
-          <div className={'inner-graph'}>
+          <div
+            className={'inner-graph'}
+            style={{ height: Height + 'px' }}
+            onClick={this.HideMenu}
+          >
             <svg width={widthGraph + 300} height={heightGraph + 100}>
               {currentCompetitors.length > 1 && (
                 <Graph

@@ -31,7 +31,10 @@ class CreateCompMenu extends Component {
           <h1 className="App-title">Менеджер Соревнований</h1>
         </header>
         <div className="container">
-          <form onSubmit={this.handlerCreateCompetition.bind(this)}>
+          <form
+            onSubmit={this.handlerCreateCompetition.bind(this)}
+            className={'create-competition-form'}
+          >
             <label className="container-label">Соревнование</label>
             {/*this.props.tournirsCount > 0 && <h3>Has {this.props.tournirsCount} tournirs</h3>*/}
             <input

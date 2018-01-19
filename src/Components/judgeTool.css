@@ -40,7 +40,7 @@
 }
 .red {
   color: #fefbef;
-  background: #b90013;
+  background: var(--theme-primary-color);
   grid-column: 1;
   grid-row: 1;
 }
@@ -51,7 +51,7 @@
   grid-row: 2;
 }
 .red:hover {
-  background: #ff0022;
+  background: var(--theme-primary-color-btn-hover);
 }
 .white:hover {
   background: #b7b7b7;

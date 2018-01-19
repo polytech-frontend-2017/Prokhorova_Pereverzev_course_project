@@ -56,6 +56,7 @@ body,
   border: none;
   background: #444444;
   width: 300px;
+  border-radius: var(--theme-primary-border-radius);
 }
 .container-label {
   font-size: 14pt;
@@ -72,15 +73,23 @@ body,
   background: #444444;
   color: #dfdfdf;
   border: solid 1px;
+  border-radius: var(--theme-primary-border-radius);
 }
 .submit-btn {
-  background-color: #b90013;
+  background-color: var(--theme-primary-color);
   border: none;
   color: white;
   padding: 5px 10px;
   text-decoration: none;
   height: 40px;
   text-transform: uppercase;
+  border-radius: var(--theme-primary-border-radius);
+}
+.submit-btn:hover {
+  background-color: var(--theme-primary-color-btn-hover);
+}
+.reate-competition-form {
+  border-radius: var(--theme-primary-border-radius);
 }
 .main-container {
   width: 100%;

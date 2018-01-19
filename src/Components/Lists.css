@@ -57,7 +57,7 @@
 }
 .tr-table:hover td {
   background: #4e5066;
-  color: #ffffff;
+  color: white;
   border-top: 1px solid #22262e;
   fill-opacity: 1;
 }
