@@ -5,11 +5,13 @@
   border-radius: var(--theme-primary-border-radius);
 }
 .form-login {
-  width: 550px;
+  /*width: 550px;*/
   display: flex;
   flex-direction: column;
   padding: var(--theme-primary-padding);
   border-radius: var(--theme-primary-border-radius);
+  /*justify-content: flex-start;
+  align-items: center;*/
 }
 .container-label-login {
   margin: auto;
@@ -52,7 +54,7 @@
   color: coral;
   margin: var(--theme-primary-margin) 0;
 }
-.form-groups-inputs {
+.group-input-signup {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
 }

@@ -44,7 +44,7 @@ class RegisterMenu extends Component {
             size={15.2}
             type="text"
             name="login"
-            placeholder="username"
+            placeholder="логин"
             required
             defaultValue={login}
             onInput={this.handleLoginChange.bind(this)}
@@ -54,7 +54,7 @@ class RegisterMenu extends Component {
             size={pass}
             type="password"
             name="pass"
-            placeholder="password"
+            placeholder="пароль"
             required
             defaultValue={pass}
             onInput={this.handlePassChange.bind(this)}
