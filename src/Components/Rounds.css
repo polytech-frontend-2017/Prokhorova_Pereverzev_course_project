@@ -1,0 +1,39 @@
+.container-rounds {
+  width: 100%;
+  padding: 10px;
+}
+.container-rounds-list {
+  width: 300px;
+  //grid-colum: 1;
+  border: #000 2px;
+  padding: 10px;
+  background: #fff;
+  height: 100%;
+  display: inline-block;
+  float: left;
+  grid-template-rows: [linename1 linename2 linename3] 150px 1fr-100px 100px;
+}
+.list-competitor {
+  float: left;
+  width: 100%;
+  text-align: left;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background: #fff;
+  display: inline-block;
+}
+.rounds-main {
+  display: grid;
+  grid-template-columns: [linename1 linename2] 320px 1fr;
+  width: 100%;
+  height: 100%;
+}
+.Graph {
+  float: left;
+  display: inline-block;
+  width: 0px;
+}
+.inner-graph {
+  position: absolute;
+  z-index: 1;
+}

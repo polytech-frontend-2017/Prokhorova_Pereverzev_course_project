@@ -1,0 +1,7 @@
+.select-menu {
+  z-index: 9000;
+}
+.Select {
+  position: fixed;
+  width: 310px;
+}

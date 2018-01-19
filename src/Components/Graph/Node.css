@@ -1,0 +1,25 @@
+.rectComp {
+  stroke: black;
+}
+.text-group {
+  text-anchor: start;
+  fill: black;
+}
+.inner-g {
+  fill: white;
+}
+.inner-g:hover {
+  fill: #dfdfdf;
+}
+.activePair {
+  stroke-width: 3px;
+}
+.red-node {
+  fill: #b90013;
+}
+.red-node-text {
+  fill: white;
+}
+.inner-g:hover > .red-node-text {
+  fill: black;
+}
