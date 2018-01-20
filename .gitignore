@@ -25,5 +25,4 @@ chrome-user-data
 .vscode
 *.swp
 *.swo
-src/Person.js
 src/logoAikidoText.svg

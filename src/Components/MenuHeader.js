@@ -45,17 +45,18 @@ export default class MenuHeader extends Component {
       Title = Title.slice(0, 16) + '...';
     }
     return (
-      <div className={'divStyle'}>
-        <img src={logo} className={'Applogo'} alt="logo" />
+      <div className={'divStyle'} role={'grid'}>
+        <img src={logo} className={'Applogo'} role={'banner'} alt="logo" />
         <div className={'titletext'} title={title + ' / ' + date}>
           {Title}
         </div>
-        <ul className={'header-ul'}>
+        <nav className={'header-ul'}>
           {this.menu.map((menuItem, i) => {
             return (
               <div className={'container-li'} key={i}>
                 <div className={'verticalLine'} />
                 <li
+                  role={'menuitem'}
                   className={classNames({
                     selected: menuItem.name === this.state.activeMenu,
                     'header-li': true
@@ -69,7 +70,7 @@ export default class MenuHeader extends Component {
               </div>
             );
           })}
-        </ul>
+        </nav>
       </div>
     );
   }

@@ -87,3 +87,6 @@
 .not-fixed:hover {
   background-color: var(--theme-green-btn-primary-hover);
 }
+.startBtn:disabled {
+  background-color: var(--theme-primary-color-btn-disabled);
+}

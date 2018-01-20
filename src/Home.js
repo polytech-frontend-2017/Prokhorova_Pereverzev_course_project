@@ -29,7 +29,6 @@ class Home extends Component {
     this.socket.on('reconnect_attempt', () => {
       this.socket.io.opts.transports = ['polling', 'websocket'];
     });
-    //this.socket.sockets.on("error", onError);
     this.store = null;
     this.state = {
       page: 'CreateCompMenu',

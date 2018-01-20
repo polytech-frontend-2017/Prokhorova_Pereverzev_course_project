@@ -6,6 +6,7 @@ import Graph from './Graph';
 import MenuCompetitors from './Graph/MenuCompetitors';
 import { VOICE_RECIEVED, COMMUNITY_VOITING } from '../Events.js';
 import * as d3 from 'd3';
+import { cutStr } from '../Factories';
 
 function createEmptyDataTree(levels, parent, levelBuild) {
   if (levels <= levelBuild)
@@ -327,7 +328,7 @@ class Rounds extends Component {
   }
   filterCompetitors(currentTournir) {
     return this.props.competitors.filter(competitor =>
-      competitor.tournirsId.find(id => id === currentTournir.id)
+      competitor.tournirsId.find(id => id == currentTournir.id)
     );
   }
   componentWillMount() {
@@ -401,12 +402,15 @@ class Rounds extends Component {
                 {currentCompetitors.map((competitor, i) => (
                   <tr key={i}>
                     <td className={'list-competitor-rounds'}>
-                      {i +
-                        1 +
-                        '. ' +
-                        competitor.name +
-                        ' ' +
-                        competitor.surname}
+                      {cutStr(
+                        i +
+                          1 +
+                          '. ' +
+                          competitor.name +
+                          ' ' +
+                          competitor.surname,
+                        20
+                      )}
                     </td>
                   </tr>
                 ))}

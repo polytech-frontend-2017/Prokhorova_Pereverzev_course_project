@@ -183,16 +183,20 @@ export class Store {
   addScore(idPair, manId, idTournir, score) {
     const Pairs = this.tournirs.find(t => t.id === idTournir).groups;
     const pair = Pairs.find(p => p.id === idPair);
-    if (manId === 1) pair.win1 = score;
-    else pair.win2 += score;
-    this.emitChange();
+    if (pair) {
+      if (manId === 1) pair.win1 = score;
+      else pair.win2 += score;
+      this.emitChange();
+    }
   }
   destroyScore(idPair, idTournir) {
     const Pairs = this.tournirs.find(t => t.id === idTournir).groups;
     const pair = Pairs.find(p => p.id === idPair);
-    pair.win1 = 0;
-    pair.win2 = 0;
-    this.emitChange();
+    if (pair) {
+      pair.win1 = 0;
+      pair.win2 = 0;
+      this.emitChange();
+    }
   }
 }
 

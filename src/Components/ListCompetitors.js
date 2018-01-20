@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import connectDecorator from '../context/connectDecorator';
 import './Lists.css';
 import './ListForms.css';
+import { cutStr } from '../Factories';
 
 class ListCompetitors extends Component {
   constructor(props) {
@@ -166,9 +167,9 @@ class ListCompetitors extends Component {
             {competitors.map((competitor, i) => (
               <tr className={'tr-table'} key={i}>
                 <td className={'td-table'}>{i}</td>
-                <td className={'td-table'}>{competitor.name}</td>
-                <td className={'td-table'}>{competitor.patronomics}</td>
-                <td className={'td-table'}>{competitor.surname}</td>
+                <td className={'td-table'}>{cutStr(competitor.surname)}</td>
+                <td className={'td-table'}>{cutStr(competitor.name)}</td>
+                <td className={'td-table'}>{cutStr(competitor.patronomics)}</td>
                 <td className={'td-table'}>{competitor.age}</td>
                 <td className={'td-table'}>{competitor.qiu}</td>
                 <td className={'td-table'}>{competitor.mass} </td>

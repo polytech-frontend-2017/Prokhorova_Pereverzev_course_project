@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './Node.css';
+import { cutStr } from '../../Factories';
 
 function getNames(pair) {
   let Name_1 = '',
@@ -87,7 +88,7 @@ class Node extends Component {
             y={this.state.heightRectComp + 10}
             className={'text-group red-node-text'}
           >
-            {this.state.firstName}
+            {cutStr(this.state.firstName)}
           </text>
           <rect
             width={this.state.heightRectComp}
@@ -117,7 +118,7 @@ class Node extends Component {
             y={this.state.heightRectComp * 2 + 15}
             className={'text-group'}
           >
-            {this.state.secondName}
+            {cutStr(this.state.secondName)}
           </text>
           <rect
             width={this.state.heightRectComp}

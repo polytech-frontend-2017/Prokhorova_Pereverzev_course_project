@@ -38,9 +38,18 @@ const createVoice = ({ voice = '', sender = { name: '' } } = {}) => ({
 const getTime = date => {
   return `${date.getHours()}:${('0' + date.getMinutes()).slice(-2)}`;
 };
-
+/**
+ * cut string if it more then 13 symbols
+ * @param str{string}
+ * @param num{number} number of symbols
+ * @returns {string}
+ */
+const cutStr = (str, num = 13) => {
+  if (str.length > num) str = str.slice(0, num) + '...';
+  return str;
+};
 module.exports = {
   createUser,
   createVoice: createVoice,
-  getTime
+  cutStr
 };
