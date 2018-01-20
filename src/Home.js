@@ -71,7 +71,6 @@ class Home extends Component {
   }
 
   changeDataCompetition(title_, date_) {
-    console.log(title_ + ' ' + date_);
     this.setState({ title: title_, date: date_ });
   }
   /*
@@ -89,6 +88,7 @@ class Home extends Component {
         this.activeTournir = this.store.tournirs[0];
       this.socket.emit(USER_CONNECTED, user, 'main');
       this.setState({
+        page: 'CreateCompMenu',
         user: user,
         title: this.store.competition.title,
         date: this.store.competition.date
@@ -129,13 +129,14 @@ class Home extends Component {
     }
   }
   componentWillMount() {
-    if (sessionStorage.getItem('socketUserName'))
+    if (sessionStorage.getItem('socketUserName')) {
       this.socket.emit(
         VERIFY_USER,
         sessionStorage.getItem('socketUserName'),
         'password',
         this.setUser
       );
+    }
   }
   changeactiveTournir(newTournir) {
     this.activeTournir = newTournir;

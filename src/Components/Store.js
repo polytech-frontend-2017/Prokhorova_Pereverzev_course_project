@@ -178,11 +178,11 @@ export class Store {
     this.tournirs.find(t => t.id === idTournir).groups = [];
     this.emitChange();
   }
-  addScore(idPair, man, idTournir) {
+  addScore(idPair, manId, idTournir, score) {
     const Pairs = this.tournirs.find(t => t.id === idTournir).groups;
     const pair = Pairs.find(p => p.id === idPair);
-    if (man === 1) pair.win1 += 1;
-    else pair.win2 += 1;
+    if (manId === 1) pair.win1 = score;
+    else pair.win2 += score;
     this.emitChange();
   }
   destroyScore(idPair, idTournir) {

@@ -50,10 +50,11 @@
   background: #5a5a5a;
 }
 .red:disabled,
-.white:disabled {
+.white:disabled,
+.changeSelect:disabled {
   background: #767676;
   color: white;
 }
 .changeSelect:hover {
-  background: #75716d;
+  background: #767676;
 }

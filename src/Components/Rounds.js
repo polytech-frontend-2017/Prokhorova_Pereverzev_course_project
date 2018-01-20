@@ -111,6 +111,18 @@ class Rounds extends Component {
     if (Node) {
       Node.pair.win1 = judgeVoicesCount.win1;
       Node.pair.win2 = judgeVoicesCount.win2;
+      this.props.addScore(
+        Node.pair.id,
+        1,
+        this.state.currentTournir.id,
+        judgeVoicesCount.win1
+      );
+      this.props.addScore(
+        Node.pair.id,
+        2,
+        this.state.currentTournir.id,
+        judgeVoicesCount.win2
+      );
     }
     this.setState({
       judgeVoices: arrVoices,
@@ -173,13 +185,14 @@ class Rounds extends Component {
     if (AllCompetotors.length !== currCompetitors.length && !currTournir.fixed)
       fillTree = this.createD3(level, currCompetitors, currTournir);
     else {
-      fillTree = this.fillNodesByPairs(level, currCompetitors, currTournir);
+      fillTree = this.fillNodesByPairs(currTournir);
     }
     return fillTree;
   }
-  fillNodesByPairs(level, currCompetitors, currTournir) {
+  fillNodesByPairs(currTournir) {
     let pairs = currTournir.groups;
-    let emptyTree = this.newEmptyTree(level);
+    let Level = Math.ceil(Math.log2(pairs.length / 2 + 1) - 1);
+    let emptyTree = this.newEmptyTree(Level);
     emptyTree.nodes.map(
       node => (node.pair = pairs.find(pair => pair.id === node.data.name))
     );
@@ -350,7 +363,6 @@ class Rounds extends Component {
       currentCompetitors,
       fixed,
       judgeVoices,
-      levels,
       activePair,
       showMenu,
       xMenu,
@@ -358,6 +370,9 @@ class Rounds extends Component {
       nodes,
       links
     } = this.state;
+    let { levels } = this.state;
+    if (currentTournir.fixed)
+      levels = Math.ceil(Math.log2(currentTournir.groups.length / 2 + 1) - 1);
     const widthGraph = levels * 300,
       heightGraph = 2 ** levels * 130;
     const Height = window.innerHeight - 111;
