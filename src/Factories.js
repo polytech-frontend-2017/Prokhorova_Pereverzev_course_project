@@ -14,24 +14,6 @@ const createUser = ({ name = '' } = {}) => ({
 });
 
 /**
- * createStartVoiting
- * Creates a Start Voiting object.
- * @prop id {string}
- * @prop time {Date} the time in 24hr format i.e. 14:22
- * @prop start {bool}
- * @prop sender {string}
- * @param {object}
- *   start{bool}
- *   sender{string}
- */
-const createStartVoiting = ({ start = true, sender = '' } = {}) => ({
-  id: uuidv4(),
-  time: getTime(new Date(Date.now())),
-  start,
-  sender
-});
-
-/**
  * createVoice
  * Creates a Voice object from pult.
  * @prop id {string}
@@ -49,30 +31,6 @@ const createVoice = ({ voice = '', sender = { name: '' } } = {}) => ({
   name: sender.name
 });
 
-/*
-* CreateVoiting
-* Creates a Voiting object
-* @prop id {string}
-* @prop name {string}
-* @prop voiting {Array.string}
-* @prop users {Array.string}
-* @param {object}
-*   voiting {Array.string}
-*   name {string}
-*   users {Array.string}
-*/
-const CreateVoiting = ({
-  voiting = [],
-  name = 'Voiting',
-  users = []
-} = {}) => ({
-  id: uuidv4(),
-  name,
-  voiting,
-  users,
-  typingUsers: []
-});
-
 /**
  * @param date {Date}
  * @return a string represented in 24hr time i.e. '11:30'
@@ -82,8 +40,7 @@ const getTime = date => {
 };
 
 module.exports = {
-  createStartVoiting,
-  CreateVoiting,
   createUser,
-  createVoice: createVoice
+  createVoice: createVoice,
+  getTime
 };

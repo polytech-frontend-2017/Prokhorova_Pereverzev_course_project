@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Node from './Node';
 import './Graph.css';
 
@@ -33,7 +34,6 @@ class Graph extends Component {
   linkHorizontal(link) {
     const parentX = this.props.width - link.parent.y + 10,
       targetX = this.props.width - link.y + 210;
-
     let d =
       'M ' +
       parentX +
@@ -85,3 +85,22 @@ class Graph extends Component {
 }
 
 export default Graph;
+Graph.propTypes = {
+  nodes: PropTypes.array.isRequired,
+  links: PropTypes.array.isRequired,
+  judgeVoices: PropTypes.object.isRequired,
+  x: PropTypes.number.isRequired,
+  y: PropTypes.number.isRequired,
+  width: PropTypes.number.isRequired,
+  toggleMenuName: PropTypes.func.isRequired,
+  activePair: PropTypes.func.isRequired,
+  setActivePairId: PropTypes.func.isRequired
+};
+Graph.defaultProps = {
+  nodes: [],
+  links: [],
+  judgeVoices: {},
+  x: 0,
+  y: 0,
+  width: 0
+};

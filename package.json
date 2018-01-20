@@ -7,17 +7,17 @@
   "author": "Max and I",
   "license": "MIT",
   "dependencies": {
+    "concurrently": "^3.5.1",
     "d3": "^4.12.2",
     "express": "^4.16.2",
     "husky": "^0.14.3",
     "lint-staged": "^6.0.0",
-    "mongodb": "^3.0.1",
-    "mongoose": "^5.0.0",
     "prettier": "^1.10.2",
     "react": "^16.0.0",
+    "react-contextmenu": "^2.9.2",
     "react-dom": "^16.0.0",
     "react-router-dom": "^4.2.2",
-    "react-scripts": "^1.0.14",
+    "react-scripts": "1.0.14",
     "react-select": "^1.2.0",
     "socket.io": "^2.0.4",
     "socket.io-client": "latest",
@@ -34,14 +34,11 @@
     "start": "concurrently --kill-others \"npm run react\" \"npm run server\"",
     "react": "react-scripts start",
     "server": "nodemon src/server/index.js",
-	"storybook": "start-storybook -p 9001 -c storybook",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
   "devDependencies": {
-    "@storybook/react": "^3.3.10",
-    "babel-core": "^6.26.0",
     "concurrently": "^3.5.1",
     "nodemon": "^1.14.11"
   }

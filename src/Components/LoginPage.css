@@ -1,0 +1,60 @@
+.container-login {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--theme-primary-color-gray);
+  border-radius: var(--theme-primary-border-radius);
+}
+.form-login {
+  /*width: 550px;*/
+  display: flex;
+  flex-direction: column;
+  padding: var(--theme-primary-padding);
+  border-radius: var(--theme-primary-border-radius);
+  /*justify-content: flex-start;
+  align-items: center;*/
+}
+.container-label-login {
+  margin: auto;
+  padding: var(--theme-primary-padding);
+  color: white;
+  font-size: var(--theme-primary-font-header-size);
+  font-family: var(--theme-primary-font-family);
+  text-transform: uppercase;
+}
+.container-input-login {
+  background-color: var(--theme-primary-color-gray-label);
+  border-radius: var(--theme-primary-border-radius);
+  padding: 15px var(--theme-primary-padding);
+  margin: 5px var(--theme-primary-padding);
+  font-size: var(--theme-primary-font-size);
+  font-family: var(--theme-primary-font-family);
+  border: none;
+}
+.login-btns {
+  padding: var(--theme-primary-padding);
+  border: none;
+  color: white;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-size: var(--theme-primary-font-size);
+  font-family: var(--theme-primary-font-family);
+}
+.submit-btn-login {
+  background-color: var(--theme-primary-color);
+  border-radius: var(--theme-primary-border-radius);
+  margin: 20px 0;
+}
+.submit-btn-login:hover {
+  background-color: var(--theme-primary-color-btn-hover);
+}
+.submit-btn-login:active {
+  transform: scale(0.99);
+}
+.error {
+  color: coral;
+  margin: var(--theme-primary-margin) 0;
+}
+.group-input-signup {
+  display: flex;
+  flex-direction: column;
+}

@@ -9,13 +9,13 @@
   fill: white;
 }
 .inner-g:hover {
-  fill: #dfdfdf;
+  fill: var(--theme-white-primary-color);
 }
 .activePair {
   stroke-width: 3px;
 }
 .red-node {
-  fill: #b90013;
+  fill: var(--theme-primary-color);
 }
 .red-node-text {
   fill: white;

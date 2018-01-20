@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import connectDecorator from '../context/connectDecorator';
 import './Lists.css';
 
@@ -11,12 +12,18 @@ class ListTournirs extends Component {
       minKiu: '',
       maxKiu: '',
       minMass: '',
-      maxMass: ''
+      maxMass: '',
+      tournirs: this.props.tournirs
     };
     this.textInput = null;
     this.focus = this.focus.bind(this);
     this.handleAddTournir = this.handleAddTournir.bind(this);
     this.handleDestroy = this.handleDestroy.bind(this);
+  }
+  componentWillReceiveProps(newProps) {
+    this.setState({
+      tournirs: newProps.tournirs
+    });
   }
   focus() {
     this.textInput.focus();
@@ -42,100 +49,101 @@ class ListTournirs extends Component {
       minKiu: '',
       maxKiu: '',
       minMass: '',
-      maxMass: ''
+      maxMass: '',
+      tournirs: this.state.tournirs
     });
+    if (this.props.activeTournir === null)
+      this.props.changeactiveTournir(this.props.tournirs[0]);
     this.focus();
   }
   handleDestroy(id) {
     this.props.destroyTournir(id);
+    this.setState({ tournirs: this.state.tournirs });
   }
   render() {
+    const { tournirs } = this.state;
     return (
-      <div>
-        <article className={'add-form'}>
-          <form className={'formInput'} onSubmit={this.handleAddTournir}>
-            <h1 className={'formInput-h1'}>Добавить турнир</h1>
-            <div className={'group_input short-tournir'}>
-              <label className={'group_input-label'}>Возраст:</label>
-              <input
-                className={'group_input-input short-tournir-input'}
-                type={'number'}
-                min={1}
-                max={100}
-                placeholder={'от'}
-                value={this.state.minAge}
-                onInput={this.changeInput.bind(this, 'minAge')}
-                required
-                ref={input => {
-                  this.textInput = input;
-                }}
-              />&nbsp;—&nbsp;
-              <input
-                className={'group_input-input short-tournir-input'}
-                type={'number'}
-                min={1}
-                max={100}
-                placeholder={'до'}
-                value={this.state.maxAge}
-                onInput={this.changeInput.bind(this, 'maxAge')}
-                required
-              />
-            </div>
-            <div className={'group_input short-tournir'}>
-              <label className={'group_input-label'}>Кю/дан:</label>
-              <input
-                className={'group_input-input short-tournir-input'}
-                type={'number'}
-                min={1}
-                max={10}
-                placeholder={'от'}
-                value={this.state.minKiu}
-                onInput={this.changeInput.bind(this, 'minKiu')}
-                required
-              />&nbsp;—&nbsp;
-              <input
-                className={'group_input-input short-tournir-input'}
-                type={'number'}
-                min={1}
-                max={10}
-                placeholder={'до'}
-                value={this.state.maxKiu}
-                onInput={this.changeInput.bind(this, 'maxKiu')}
-                required
-              />
-            </div>
-            <div className={'group_input short-tournir'}>
-              <label className={'group_input-label'}>Вес:</label>
-              <input
-                className={'group_input-input short-tournir-input'}
-                type={'number'}
-                min={1}
-                max={150}
-                placeholder={'от'}
-                value={this.state.minMass}
-                onInput={this.changeInput.bind(this, 'minMass')}
-                required
-              />&nbsp;—&nbsp;
-              <input
-                className={'group_input-input short-tournir-input'}
-                type={'number'}
-                min={1}
-                max={150}
-                placeholder={'до'}
-                value={this.state.maxMass}
-                onInput={this.changeInput.bind(this, 'maxMass')}
-                required
-              />
-            </div>
-            <div className="submit-button">
-              <input
-                className={'submit-button-input'}
-                type="submit"
-                value={'Добавить'}
-              />
-            </div>
-          </form>
-        </article>
+      <div className={'baseDiv'}>
+        <form className={'formInput'} onSubmit={this.handleAddTournir}>
+          <h1 className={'formInput-h1'}>Добавить турнир</h1>
+          <div className={'group_input short-tournir'}>
+            <label className={'group_input-label'}>Возраст:</label>
+            <input
+              className={'group_input-input short-tournir-input'}
+              type={'number'}
+              min={1}
+              max={100}
+              placeholder={'от'}
+              value={this.state.minAge}
+              onInput={this.changeInput.bind(this, 'minAge')}
+              required
+              ref={input => {
+                this.textInput = input;
+              }}
+            />&nbsp;—&nbsp;
+            <input
+              className={'group_input-input short-tournir-input'}
+              type={'number'}
+              min={1}
+              max={100}
+              placeholder={'до'}
+              value={this.state.maxAge}
+              onInput={this.changeInput.bind(this, 'maxAge')}
+              required
+            />
+          </div>
+          <div className={'group_input short-tournir'}>
+            <label className={'group_input-label'}>Кю/дан:</label>
+            <input
+              className={'group_input-input short-tournir-input'}
+              type={'number'}
+              min={1}
+              max={10}
+              placeholder={'от'}
+              value={this.state.minKiu}
+              onInput={this.changeInput.bind(this, 'minKiu')}
+              required
+            />&nbsp;—&nbsp;
+            <input
+              className={'group_input-input short-tournir-input'}
+              type={'number'}
+              min={1}
+              max={10}
+              placeholder={'до'}
+              value={this.state.maxKiu}
+              onInput={this.changeInput.bind(this, 'maxKiu')}
+              required
+            />
+          </div>
+          <div className={'group_input short-tournir'}>
+            <label className={'group_input-label'}>Вес:</label>
+            <input
+              className={'group_input-input short-tournir-input'}
+              type={'number'}
+              min={1}
+              max={150}
+              placeholder={'от'}
+              value={this.state.minMass}
+              onInput={this.changeInput.bind(this, 'minMass')}
+              required
+            />&nbsp;—&nbsp;
+            <input
+              className={'group_input-input short-tournir-input'}
+              type={'number'}
+              min={1}
+              max={150}
+              placeholder={'до'}
+              value={this.state.maxMass}
+              onInput={this.changeInput.bind(this, 'maxMass')}
+              required
+            />
+          </div>
+          <input
+            className={'submit-button-input'}
+            type="submit"
+            value={'Добавить'}
+          />
+        </form>
         <div className="table-title">
           <h3 className={'h3-title'}>Турниры</h3>
         </div>
@@ -148,7 +156,7 @@ class ListTournirs extends Component {
               <th className={'th-tablse'}>Вес</th>
               <th className={'th-tablse'} />
             </tr>
-            {this.props.tournirs.map((tournir, i) => (
+            {tournirs.map((tournir, i) => (
               <tr className={'tr-table'} key={i}>
                 <td className={'td-table'}>{i}</td>
                 <td className={'td-table'}>
@@ -194,3 +202,11 @@ export default connectDecorator(
     tournirs: store.tournirs
   })
 );
+
+ListTournirs.propTypes = {
+  tournirs: PropTypes.array,
+  activeTournir: PropTypes.object,
+  addTournir: PropTypes.func,
+  destroyTournir: PropTypes.func,
+  changeactiveTournir: PropTypes.func
+};

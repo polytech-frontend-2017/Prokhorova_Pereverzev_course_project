@@ -1,0 +1,69 @@
+.create-competition-form {
+  display: flex;
+  flex-direction: column;
+  padding: var(--theme-primary-padding);
+  width: 400px;
+  background: var(--theme-primary-color-gray);
+  margin: var(--theme-primary-margin);
+  border-radius: var(--theme-primary-border-radius);
+}
+.container-label {
+  margin: auto;
+  font-size: var(--theme-primary-font-header-size);
+  font-family: var(--theme-primary-font-family);
+  padding: var(--theme-primary-padding);
+  color: white;
+  text-transform: uppercase;
+}
+.container-input {
+  background-color: var(--theme-primary-color-gray-label);
+  border-radius: var(--theme-primary-border-radius);
+  border: none;
+  padding: var(--theme-primary-padding);
+  margin: 5px var(--theme-primary-padding);
+  font-size: var(--theme-primary-font-size);
+  font-family: var(--theme-primary-font-family);
+}
+.submit-btn {
+  padding: var(--theme-primary-padding);
+  background-color: var(--theme-primary-color);
+  border: none;
+  color: white;
+  margin: var(--theme-primary-padding);
+  /*padding: 5px 10px;*/
+  text-decoration: none;
+  text-transform: uppercase;
+  border-radius: var(--theme-primary-border-radius);
+}
+.submit-btn:hover {
+  background-color: var(--theme-primary-color-btn-hover);
+}
+.submit-btn:active {
+  transform: scale(0.99);
+}
+.reate-competition-form {
+  border-radius: var(--theme-primary-border-radius);
+}
+.container {
+}
+.App-title {
+  font-size: var(--theme-primary-font-size);
+  text-transform: uppercase;
+}
+.App-intro {
+  font-size: var(--theme-primary-font-size);
+}
+.create-comp-menu {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.App-header {
+  background-color: var(--theme-primary-color-gray);
+  color: white;
+  height: 40px;
+  padding: var(--theme-primary-padding);
+  width: 100%;
+  text-align: center;
+}

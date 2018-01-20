@@ -1,22 +1,35 @@
-
+@import 'https://fonts.googleapis.com/css?family=Lato:100, 300, 400, 700, 900';
 body {
   margin: 0;
   padding: 0;
-  font-family: Tahoma, Sans-Serif;;
-
+  font-family: Tahoma, Sans-Serif;
 }
-main{
-  background:  rgba(1,1,1,0.1) url('logoFonAikido.svg') no-repeat 0 0;
+.main {
+  background: rgba(1, 1, 1, 0.1) url('logoFonAikido.svg') no-repeat 0 0;
   height: 100%;
-  background-position:center center;
+  background-position: center center;
   background-attachment: fixed;
-
 }
-.main-container:before{
+.main-container:before {
   opacity: 0.2;
   content: ' ';
 }
 :root {
-  --theme-primary-color: rgba(222, 0, 2, 0.84);
+  --theme-primary-color: rgb(182, 0, 2);
+  --theme-primary-color-gray: #444444;
+  --theme-primary-color-gray-label: #dfdfdf;
+  --theme-primary-color-btn-hover: #ff0022;
+  --theme-primary-color-btn-disabled: rgb(117, 113, 109);
+  --theme-green-btn-primary-color: rgb(51, 98, 32);
+  --theme-green-btn-primary-hover: rgb(75, 143, 46);
+  --theme-white-primary-color: #ebebeb;
   --theme-primary-border-radius: 3px;
+  --theme-primary-border-radius-btn-rounds: 50px;
+  --theme-primary-padding: 20px;
+  --theme-primary-margin: 20px auto;
+  --theme-primary-btn-height: 60px;
+  --theme-primary-font-size: 12pt;
+  --theme-primary-font-header-size: 20px;
+  --theme-primary-font-family: Tahoma, 'Whitney SSm A', 'Whitney SSm B', 'Lato',
+    'Lucida Grande', 'Lucida Sans Unicode', Sans-Serif, serif;
 }

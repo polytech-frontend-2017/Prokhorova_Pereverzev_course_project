@@ -1,14 +1,10 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
 import './MenuCompetitors.css';
-import PropTypes from 'prop-types';
 
 class MenuCompetitors extends Component {
-  /*propTypes: {
-        label: PropTypes.string,
-        searchable: PropTypes.bool,
-    };*/
   constructor(props) {
     super(props);
     this.state = {
@@ -53,8 +49,7 @@ class MenuCompetitors extends Component {
         className={'select-menu'}
         style={{
           top: this.props.y,
-          left: this.props.x,
-          position: 'relative'
+          left: this.props.x
         }}
       >
         <Select
@@ -90,3 +85,10 @@ class MenuCompetitors extends Component {
 }
 
 export default MenuCompetitors;
+MenuCompetitors.propTypes = {
+  currCompetitors: PropTypes.array,
+  x: PropTypes.number,
+  y: PropTypes.number,
+  menuSelect: PropTypes.func,
+  hideMenu: PropTypes.func
+};

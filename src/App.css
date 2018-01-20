@@ -1,15 +1,24 @@
+html {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: auto;
+  align-items: stretch;
+  justify-content: space-between;
+}
+body,
+#root,
+.router-div,
+.router-div > div,
 .App {
-  /*text-align: center;
-  z-index: 100;
-  position: absolute;
-  width: 100%;
-  top: 0;
-  height: 100%;*/
-  display: grid;
-  grid-template-rows: [linename1] 90px [linename2] 1000px;
+  overflow-x: hidden;
+  flex: inherit;
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+  justify-content: space-between;
 }
 .App-logo {
-  /*animation: App-logo-spin infinite 12s linear;*/
   height: 1500px;
   width: 100px;
   z-index: 1;
@@ -17,64 +26,46 @@
   margin: auto;
   display: block;
 }
-.App-header {
-  background-color: #444444;
-  color: white;
-  height: 40px;
-  padding: 10px;
-  margin: auto;
+.main-container {
   width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-grow: inherit;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.router-div > div {
+  min-height: 100%;
+}
+.login-signin {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--theme-primary-color-gray);
+  margin: var(--theme-primary-margin);
+}
+.tab-group {
+  display: grid;
+  margin: 0;
+  height: 70px;
+  grid-template-columns: repeat(2, 0.5fr);
+  padding: var(--theme-primary-color-btn-disabled);
+}
+.login-signup-li {
+  list-style-type: none;
+  background-color: var(--theme-primary-color-gray);
+  padding: var(--theme-primary-color-btn-disabled);
   text-align: center;
 }
-.App-title {
-  font-size: 1em;
-  text-transform: uppercase;
+.active-li {
+  background-color: #c22b2a;
 }
-.App-intro {
-  font-size: large;
-}
-.container{
-  margin: 15px auto;
-  text-align: center;
-  position: relative;
-  padding: 15px;
-  border: none;
-  background: #444444;
-  width: 300px;
-}
-.container-label {
-  font-size: 14pt;
-  padding:15px;
-  color: #fff;
-  font-family: sans-serif;
-  text-transform: uppercase;
-}
-.container-input {
-  font:  12pt sans-serif ;
-  width: 250px;
-  height: 30px;
-  margin: 10px 15px;
-  background: #444444;
-  color: #dfdfdf;
-  border: solid 1px;
-}
-.submit-btn {
-  background-color: #b90013;
-  border: none;
-  color: white;
-  padding: 5px 10px;
+.login-signup-a {
+  padding: var(--theme-primary-padding);
   text-decoration: none;
-  height: 40px;
+  color: white;
+  transition: 0.5s ease;
+  display: inline-block;
   text-transform: uppercase;
-}
-@keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-.main-container{
-  width:100%;
-  height: 100%;
-}
-.create-comp-menu{
-  /*display: grid;*/
+  font-size: var(--theme-primary-font-header-size);
+  font-family: var(--theme-primary-font-family);
 }

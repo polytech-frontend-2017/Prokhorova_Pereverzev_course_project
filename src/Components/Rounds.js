@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import io from 'socket.io-client';
+import PropTypes from 'prop-types';
 import connectDecorator from '../context/connectDecorator';
 import './Rounds.css';
 import Graph from './Graph';
@@ -8,7 +8,7 @@ import { VOICE_RECIEVED, COMMUNITY_VOITING } from '../Events.js';
 import * as d3 from 'd3';
 
 function createEmptyDataTree(levels, parent, levelBuild) {
-  if (levels === levelBuild)
+  if (levels <= levelBuild)
     return [
       {
         name: parent + '-1',
@@ -54,8 +54,6 @@ function createEmptyDataTree(levels, parent, levelBuild) {
 class Rounds extends Component {
   constructor(props) {
     super(props);
-    //this.currentTournir = this.props.activeTournir;
-    //this.currentCompetitors = this.filterCompetitors(this.currentTournir);
     this.state = {
       judgeVoices: [],
       judgeVoicesCount: { win1: 0, win2: 0, id: '' },
@@ -64,8 +62,8 @@ class Rounds extends Component {
       currentCompetitors: this.filterCompetitors(this.props.activeTournir),
       isVoiting: true,
       showMenu: false,
-      xMenu: 50,
-      yMenu: 50,
+      xMenu: 0,
+      yMenu: 0,
       fixed: this.props.activeTournir.fixed,
       numberName: null,
       line: d3.line(),
@@ -112,6 +110,18 @@ class Rounds extends Component {
     if (Node) {
       Node.pair.win1 = judgeVoicesCount.win1;
       Node.pair.win2 = judgeVoicesCount.win2;
+      this.props.addScore(
+        Node.pair.id,
+        1,
+        this.state.currentTournir.id,
+        judgeVoicesCount.win1
+      );
+      this.props.addScore(
+        Node.pair.id,
+        2,
+        this.state.currentTournir.id,
+        judgeVoicesCount.win2
+      );
     }
     this.setState({
       judgeVoices: arrVoices,
@@ -174,13 +184,14 @@ class Rounds extends Component {
     if (AllCompetotors.length !== currCompetitors.length && !currTournir.fixed)
       fillTree = this.createD3(level, currCompetitors, currTournir);
     else {
-      fillTree = this.fillNodesByPairs(level, currCompetitors, currTournir);
+      fillTree = this.fillNodesByPairs(currTournir);
     }
     return fillTree;
   }
-  fillNodesByPairs(level, currCompetitors, currTournir) {
+  fillNodesByPairs(currTournir) {
     let pairs = currTournir.groups;
-    let emptyTree = this.newEmptyTree(level);
+    let Level = Math.ceil(Math.log2(pairs.length / 2 + 1) - 1);
+    let emptyTree = this.newEmptyTree(Level);
     emptyTree.nodes.map(
       node => (node.pair = pairs.find(pair => pair.id === node.data.name))
     );
@@ -202,7 +213,9 @@ class Rounds extends Component {
     this.setState({ showMenu: false });
   }
   menuSelect(selectValue) {
-    let node = this.state.nodes.find(node => node.pair.id === this.state.activePair);
+    let node = this.state.nodes.find(
+      node => node.pair.id === this.state.activePair
+    );
     switch (this.state.numberName) {
       case 1:
         if (selectValue && selectValue.value.id !== node.pair.name2.id)
@@ -213,7 +226,6 @@ class Rounds extends Component {
           node.pair.name2 = selectValue.value;
     }
     this.HideMenu();
-    /** ...change pair */
     this.props.destroyGroup(node.pair.id, this.state.currentTournir.id);
     this.props.addGroup(node.pair, this.state.currentTournir.id);
   }
@@ -231,7 +243,7 @@ class Rounds extends Component {
         level,
         nodesLastLvl[indexNode].data.name
       );
-      nodesLastLvl[indexNode++].pair = pair; //!!!!!!!!!!!!!!!!!!!!!
+      nodesLastLvl[indexNode++].pair = pair;
       arrPairs.push(pair);
     }
     if (currCompetitors.length % 2 !== 0)
@@ -251,6 +263,7 @@ class Rounds extends Component {
         arrPairs.push(Pair);
       }
       this.props.addGroup(node.pair, currTournir.id);
+      return true;
     });
     return emptyTree;
   }
@@ -274,7 +287,6 @@ class Rounds extends Component {
       id: id_
     };
   }
-
   getSocketDataVoiting() {
     this.setState({ isVoiting: !this.state.isVoiting });
     this.props.socket.emit(
@@ -309,12 +321,13 @@ class Rounds extends Component {
       root: fillTree.root,
       d3tree: fillTree.d3tree,
       nodes: fillTree.nodes,
-      links: fillTree.links
+      links: fillTree.links,
+      fixed: currentTournir.fixed
     });
   }
   filterCompetitors(currentTournir) {
     return this.props.competitors.filter(competitor =>
-      competitor.tournirsId.find(id => id === currentTournir.id)
+      competitor.tournirsId.find(id => id == currentTournir.id)
     );
   }
   componentWillMount() {
@@ -327,6 +340,7 @@ class Rounds extends Component {
       currCompetitors,
       this.props.activeTournir
     );
+    console.log();
     this.setState({
       currentTournir: this.props.activeTournir,
       currentCompetitors: currCompetitors,
@@ -346,7 +360,6 @@ class Rounds extends Component {
       currentCompetitors,
       fixed,
       judgeVoices,
-      levels,
       activePair,
       showMenu,
       xMenu,
@@ -354,12 +367,15 @@ class Rounds extends Component {
       nodes,
       links
     } = this.state;
+    let { levels } = this.state;
+    if (currentTournir.fixed)
+      levels = Math.ceil(Math.log2(currentTournir.groups.length / 2 + 1) - 1);
     const widthGraph = levels * 300,
-      heightGraph = 2 ** levels * 150;
-    console.log(judgeVoices);
+      heightGraph = 2 ** levels * 130;
+    const Height = window.innerHeight - 111;
     return (
       <div className={'rounds-main'}>
-        <div className={'container-rounds-list'}>
+        <div className={'container-rounds-list'} style={{ height: Height }}>
           <select
             className={'container-rounds'}
             onChange={this.currentSets}
@@ -368,7 +384,6 @@ class Rounds extends Component {
             {this.props.tournirs.map((tournir, i) => (
               <option key={i} value={tournir.id}>
                 {tournir.id +
-                  1 +
                   '. Кю: ' +
                   tournir.qiuRange.min +
                   '-' +
@@ -380,31 +395,35 @@ class Rounds extends Component {
               </option>
             ))}
           </select>
-          <div>
-            {currentCompetitors.map((competitor, i) => (
-              <div className={'list-competitor'} key={i}>
-                <span>
-                  {i + 1 + '. ' + competitor.name + ' ' + competitor.surname}
-                </span>
-                <br />
-              </div>
-            ))}
+          <div className={'competitors-table-rounds'}>
+            <table className={'table-competitor-rounds'}>
+              <tbody>
+                {currentCompetitors.map((competitor, i) => (
+                  <tr key={i}>
+                    <td className={'list-competitor-rounds'}>
+                      {i +
+                        1 +
+                        '. ' +
+                        competitor.name +
+                        ' ' +
+                        competitor.surname}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-          <button
-            className={'stBtn' + isVoiting ? 'startBtn' : 'stopBtn'}
-            onClick={this.getSocketDataVoiting}
-          >
-            {isVoiting ? 'START' : 'STOP'}
-          </button>
-          <button
-            className={'fixed-btn' + fixed ? 'fixed' : 'not-fixed'}
-            onClick={this.fixedTournir}
-          >
-            {fixed ? 'Разблокировать' : 'Начать соревнование'}
-          </button>
         </div>
-        <div ref={ref => (this.ref = ref)} className={'Graph'}>
-          <div className={'inner-graph'}>
+        <div
+          ref={ref => (this.ref = ref)}
+          className={'Graph'}
+          style={{ width: window.innerWidth - 300 + 'px' }}
+        >
+          <div
+            className={'inner-graph'}
+            style={{ height: Height + 'px' }}
+            onClick={this.HideMenu}
+          >
             <svg width={widthGraph + 300} height={heightGraph + 100}>
               {currentCompetitors.length > 1 && (
                 <Graph
@@ -433,6 +452,25 @@ class Rounds extends Component {
             />
           )}
         </div>
+        <div className={'btns-div-rounds'}>
+          <button
+            disabled={!fixed}
+            className={
+              'btn-rounds btn-voiting ' + (isVoiting ? 'startBtn' : 'stopBtn')
+            }
+            onClick={this.getSocketDataVoiting}
+          >
+            {isVoiting ? 'VOTE' : 'STOP VOTE'}
+          </button>
+          <button
+            className={
+              'btn-rounds fixed-btn ' + (fixed ? 'fixed' : 'not-fixed')
+            }
+            onClick={this.fixedTournir}
+          >
+            {fixed ? 'STOP' : 'START'}
+          </button>
+        </div>
       </div>
     );
   }
@@ -453,3 +491,21 @@ export default connectDecorator(
     competitors: store.competitors
   })
 );
+
+Rounds.propTypes = {
+  tournirs: PropTypes.array.isRequired,
+  competitors: PropTypes.array.isRequired,
+  destroyAllGroups: PropTypes.func.isRequired,
+  addGroup: PropTypes.func.isRequired,
+  destroyGroup: PropTypes.func.isRequired,
+  fixedTournir: PropTypes.func.isRequired,
+  addScore: PropTypes.func.isRequired,
+  destroyScore: PropTypes.func.isRequired,
+  activeTournir: PropTypes.object.isRequired,
+  socket: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
+  changeactiveTournir: PropTypes.func.isRequired
+};
+Rounds.defaultProps = {
+  competitors: []
+};

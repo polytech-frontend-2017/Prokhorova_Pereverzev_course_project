@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import LoginPage from './LoginPage';
+import SignUpPage from './SignUpPage';
 import './judgeTool.css';
 import '../App.css';
 import {
@@ -8,9 +10,10 @@ import {
   STOP_VOITING,
   VOITING_SENT
 } from '../Events';
+import { PORT, hostname } from '../server/globalConsts';
 import io from 'socket.io-client';
 
-const socketUrl = 'http://93.100.173.116:3231';
+const socketUrl = `http://${hostname}:${PORT}`;
 class judgeTool extends Component {
   constructor(props) {
     super(props);
@@ -19,11 +22,13 @@ class judgeTool extends Component {
       isDisable: false,
       setActive: false,
       user: null,
-      login: '',
-      pass: '',
-      error: ''
+      error: '',
+      toggleLogin: true
     };
-    this.socket = io(socketUrl);
+    this.socket = io(socketUrl, { forceNew: false ,transports: ['websocket'], reconnection: false});
+    this.socket.on('reconnect_attempt', () => {
+        this.socket.io.opts.transports = ['polling', 'websocket'];
+      });
     this.socket.on(START_VOITING, () => {
       this.setState({ setActive: true, isDisable: false });
     });
@@ -35,15 +40,20 @@ class judgeTool extends Component {
     });
     this.choose = this.choose.bind(this);
     this.change = this.change.bind(this);
+    this.handlerRegister = this.handlerRegister.bind(this);
+    this.loginForms = this.loginForms.bind(this);
+    this.signupForm = this.signupForm.bind(this);
   }
-
-  handlerRegister(e) {
-    e.preventDefault();
-    const { login, pass } = this.state;
+  loginForms() {
+    this.setState({ toggleLogin: true });
+  }
+  signupForm() {
+    this.setState({ toggleLogin: false });
+  }
+  handlerRegister(login, pass) {
     this.socket.emit(VERIFY_USER, login, pass, this.setUser);
   }
   setUser = ({ user, isUser, isActive }) => {
-    console.log(user, isUser);
     if (isUser) {
       this.setError('User name taken');
     } else {
@@ -55,12 +65,6 @@ class judgeTool extends Component {
   setError = error => {
     this.setState({ error });
   };
-  handleLoginChange(e) {
-    this.setState({ login: e.target.value });
-  }
-  handlePassChange(e) {
-    this.setState({ pass: e.target.value });
-  }
   choose(nameChoose) {
     this.socket.emit(VOITING_SENT, nameChoose);
     this.setState({ choise: nameChoose, isDisable: true });
@@ -69,27 +73,27 @@ class judgeTool extends Component {
     this.setState({ isDisable: false, choise: '' });
   }
   render() {
-    const { login, error, user } = this.state;
+    const { error, user, toggleLogin } = this.state;
     return (
       <div>
         {user ? (
           <div className={'pultik'}>
             <button
-              className={'red'}
+              className={'red judge-btn'}
               onClick={this.choose.bind(this, 'red')}
               disabled={!this.state.setActive || this.state.isDisable}
             >
               {'Aka'}
             </button>
             <button
-              className={'white'}
+              className={'white judge-btn'}
               onClick={this.choose.bind(this, 'white')}
               disabled={!this.state.setActive || this.state.isDisable}
             >
               {'Shiro'}
             </button>
             <button
-              className={'changeSelect'}
+              className={'changeSelect judge-btn'}
               onClick={this.change}
               disabled={!this.state.setActive}
             >
@@ -97,35 +101,43 @@ class judgeTool extends Component {
             </button>
           </div>
         ) : (
-          <div className="container">
-            <form onSubmit={this.handlerRegister.bind(this)}>
-              <label className="container-label">Регистрация</label>
-              <input
-                className="container-input"
-                size={15.2}
-                type="text"
-                name="login"
-                placeholder="nickname"
-                required
-                defaultValue={login}
-                onInput={this.handleLoginChange.bind(this)}
-              />
-              <input
-                className="container-input"
-                size={this.state.pass}
-                type="password"
-                name="pass"
-                placeholder="password"
-                required
-                defaultValue={this.state.pass}
-                onInput={this.handlePassChange.bind(this)}
-              />
-              <div className={'error'}>{error ? error : null}</div>
-              <button className="container-input submit-btn" type={'submit'}>
-                Войти
-              </button>
-            </form>
-          </div>
+          <main className={'main-container main'}>
+            <div className={'login-signin'}>
+              <ul className="tab-group">
+                <li
+                  className={
+                    'login-signup-li ' + (toggleLogin ? 'active-li' : '')
+                  }
+                  onClick={this.loginForms}
+                >
+                  <a className={'login-signup-a'} href={'#login'}>
+                    Log In
+                  </a>
+                </li>
+                <li
+                  className={
+                    'login-signup-li ' + (!toggleLogin ? 'active-li' : '')
+                  }
+                  onClick={this.signupForm}
+                >
+                  <a className={'login-signup-a'} href={'#signup'}>
+                    Sign Up
+                  </a>
+                </li>
+              </ul>
+              {toggleLogin ? (
+                <LoginPage
+                  handlerRegister={this.handlerRegister}
+                  error={error}
+                />
+              ) : (
+                <SignUpPage
+                  handlerRegister={this.handlerRegister}
+                  error={error}
+                />
+              )}
+            </div>
+          </main>
         )}
       </div>
     );
