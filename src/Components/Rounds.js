@@ -327,7 +327,7 @@ class Rounds extends Component {
   }
   filterCompetitors(currentTournir) {
     return this.props.competitors.filter(competitor =>
-      competitor.tournirsId.find(id => id == currentTournir.id)
+      competitor.tournirsId.find(id => id === currentTournir.id)
     );
   }
   componentWillMount() {

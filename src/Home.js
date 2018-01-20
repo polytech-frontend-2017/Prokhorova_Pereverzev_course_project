@@ -21,7 +21,15 @@ class Home extends Component {
   constructor() {
     super();
     this.setUser = this.setUser.bind(this);
-    this.socket = io(socketUrl);
+    this.socket = io(socketUrl, {
+      forceNew: false,
+      transports: ['websocket'],
+      reconnection: false
+    });
+    this.socket.on('reconnect_attempt', () => {
+      this.socket.io.opts.transports = ['polling', 'websocket'];
+    });
+    //this.socket.sockets.on("error", onError);
     this.store = null;
     this.state = {
       page: 'CreateCompMenu',

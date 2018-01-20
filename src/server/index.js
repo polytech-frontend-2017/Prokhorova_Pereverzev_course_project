@@ -1,6 +1,6 @@
 const { PORT, hostname } = require('./globalConsts');
 const http = require('http');
-const app = http.createServer(Reqfunction);
+const app = http.createServer();
 const io = (module.exports.io = require('socket.io')(app));
 const url = require('url');
 const SocketManager = new require('./SocketManager');

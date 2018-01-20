@@ -25,7 +25,14 @@ class judgeTool extends Component {
       error: '',
       toggleLogin: true
     };
-    this.socket = io(socketUrl);
+    this.socket = io(socketUrl, {
+      forceNew: false,
+      transports: ['websocket'],
+      reconnection: false
+    });
+    this.socket.on('reconnect_attempt', () => {
+      this.socket.io.opts.transports = ['polling', 'websocket'];
+    });
     this.socket.on(START_VOITING, () => {
       this.setState({ setActive: true, isDisable: false });
     });
