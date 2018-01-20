@@ -1,0 +1,67 @@
+.selected {
+  background: var(--theme-primary-color);
+}
+.container-li {
+  display: flex;
+  height: 100%;
+  float: right;
+}
+.verticalLine {
+  float: right;
+  border-left: 2px solid #727272;
+  width: 0 !important;
+  height: 100%;
+  outline: 0;
+  background: transparent;
+}
+.header-a {
+  padding: 45px 46px;
+  display: block;
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+}
+.header-ul {
+  grid-column: 3;
+  flex-direction: row-reverse;
+  display: flex;
+  height: inherit;
+  margin: 0;
+  list-style-type: none;
+}
+.header-li {
+  float: right;
+  text-decoration: none;
+  text-transform: uppercase;
+  color: white;
+  font-size: 14px;
+  font-family: Tahoma, 'Whitney SSm A', 'Whitney SSm B', 'Lato', 'Lucida Grande',
+    'Lucida Sans Unicode', Sans-Serif, serif;
+  height: inherit;
+  margin: 0;
+}
+.divStyle {
+  color: #fff;
+  background-color: #5a5a5a;
+  display: grid;
+  grid-template-columns: [linename1 linename2] 100px 1fr [linename3] 1fr;
+  grid-gap: 10px;
+  grid-auto-rows: minmax(100px, auto);
+  width: 100%;
+  height: 110px;
+}
+.Applogo {
+  padding: 20px;
+  grid-column: 1;
+  height: 70px;
+  float: left;
+  display: flex;
+}
+.titletext {
+  grid-column: 2;
+  min-width: 200px;
+  display: flex;
+  float: left;
+  font: 16pt sans-serif;
+  padding: 45px;
+}

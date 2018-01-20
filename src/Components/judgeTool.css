@@ -1,0 +1,60 @@
+.pultik {
+  background: var(--theme-primary-color-gray);
+  display: flex;
+  padding: var(--theme-primary-color-btn-disabled);
+  height: 100vh;
+  width: 100vw;
+  min-width: 320px;
+  min-height: 480px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 0;
+}
+.judge-btn {
+  padding: var(--theme-primary-color-btn-disabled);
+  margin: var(--theme-primary-margin);
+  font-size: 20px;
+  font-family: var(--theme-primary-font-family);
+  text-decoration: none;
+  text-transform: uppercase;
+  text-align: center;
+  width: 80%;
+  height: 24vh;
+  min-height: 150px;
+  clear: both;
+  min-width: 220px;
+  line-height: 1;
+  border: none;
+  border-radius: 150px;
+}
+.judge-btn:active {
+  transform: scale(0.98);
+}
+.red {
+  color: white;
+  background: var(--theme-primary-color);
+}
+.white {
+  color: black;
+  background: white;
+}
+.red:hover {
+  background: var(--theme-primary-color-btn-hover);
+}
+.white:hover {
+  background: #b7b7b7;
+}
+.changeSelect {
+  color: white;
+  background: #5a5a5a;
+}
+.red:disabled,
+.white:disabled,
+.changeSelect:disabled {
+  background: #767676;
+  color: white;
+}
+.changeSelect:hover {
+  background: #767676;
+}
