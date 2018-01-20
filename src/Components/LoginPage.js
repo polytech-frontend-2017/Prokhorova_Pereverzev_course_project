@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import './LoginPage.css';
 class RegisterMenu extends Component {
   constructor(props) {
@@ -10,6 +11,7 @@ class RegisterMenu extends Component {
     };
     this.handleLoginChange = this.handleLoginChange.bind(this);
     this.handlePassChange = this.handlePassChange.bind(this);
+    this.handlerLogin = this.handlerLogin.bind(this);
   }
   componentWillReceiveProps(newProps) {
     this.setState({
@@ -22,7 +24,7 @@ class RegisterMenu extends Component {
   handlePassChange(e) {
     this.setState({ pass: e.target.value });
   }
-  handlerRegister(e) {
+  handlerLogin(e) {
     e.preventDefault();
     const { login, pass } = this.state;
     this.props.handlerRegister(login, pass);
@@ -35,30 +37,30 @@ class RegisterMenu extends Component {
           id={'login'}
           action="/"
           method="post"
-          onSubmit={this.handlerRegister.bind(this)}
+          onSubmit={this.handlerLogin}
           className={'form-login'}
         >
           <label className="container-label-login">Вход</label>
-          <input
-            className="container-input-login"
-            size={15.2}
-            type="text"
-            name="login"
-            placeholder="логин"
-            required
-            defaultValue={login}
-            onInput={this.handleLoginChange.bind(this)}
-          />
-          <input
-            className="container-input-login"
-            size={pass}
-            type="password"
-            name="pass"
-            placeholder="пароль"
-            required
-            defaultValue={pass}
-            onInput={this.handlePassChange.bind(this)}
-          />
+          <div className={'group-input-signup'}>
+            <input
+              className="container-input-login"
+              type="text"
+              name="login"
+              placeholder="логин"
+              required
+              defaultValue={login}
+              onInput={this.handleLoginChange.bind(this)}
+            />
+            <input
+              className="container-input-login"
+              type="password"
+              name="pass"
+              placeholder="пароль"
+              required
+              defaultValue={pass}
+              onInput={this.handlePassChange.bind(this)}
+            />
+          </div>
           <div className={'error'}>{error ? error : null}</div>
           <button
             className="container-input-login submit-btn-login login-btns"
@@ -73,3 +75,8 @@ class RegisterMenu extends Component {
 }
 
 export default RegisterMenu;
+
+RegisterMenu.propTypes = {
+  error: PropTypes.string,
+  handlerRegister: PropTypes.func
+};

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import connectDecorator from '../context/connectDecorator';
 import './Rounds.css';
 import Graph from './Graph';
@@ -7,7 +8,7 @@ import { VOICE_RECIEVED, COMMUNITY_VOITING } from '../Events.js';
 import * as d3 from 'd3';
 
 function createEmptyDataTree(levels, parent, levelBuild) {
-  if (levels === levelBuild)
+  if (levels <= levelBuild)
     return [
       {
         name: parent + '-1',
@@ -53,8 +54,6 @@ function createEmptyDataTree(levels, parent, levelBuild) {
 class Rounds extends Component {
   constructor(props) {
     super(props);
-    //this.currentTournir = this.props.activeTournir;
-    //this.currentCompetitors = this.filterCompetitors(this.currentTournir);
     this.state = {
       judgeVoices: [],
       judgeVoicesCount: { win1: 0, win2: 0, id: '' },
@@ -63,8 +62,8 @@ class Rounds extends Component {
       currentCompetitors: this.filterCompetitors(this.props.activeTournir),
       isVoiting: true,
       showMenu: false,
-      xMenu: 50,
-      yMenu: 50,
+      xMenu: 0,
+      yMenu: 0,
       fixed: this.props.activeTournir.fixed,
       numberName: null,
       line: d3.line(),
@@ -227,7 +226,6 @@ class Rounds extends Component {
           node.pair.name2 = selectValue.value;
     }
     this.HideMenu();
-    /** ...change pair */
     this.props.destroyGroup(node.pair.id, this.state.currentTournir.id);
     this.props.addGroup(node.pair, this.state.currentTournir.id);
   }
@@ -245,7 +243,7 @@ class Rounds extends Component {
         level,
         nodesLastLvl[indexNode].data.name
       );
-      nodesLastLvl[indexNode++].pair = pair; //!!!!!!!!!!!!!!!!!!!!!
+      nodesLastLvl[indexNode++].pair = pair;
       arrPairs.push(pair);
     }
     if (currCompetitors.length % 2 !== 0)
@@ -289,7 +287,6 @@ class Rounds extends Component {
       id: id_
     };
   }
-
   getSocketDataVoiting() {
     this.setState({ isVoiting: !this.state.isVoiting });
     this.props.socket.emit(
@@ -330,12 +327,11 @@ class Rounds extends Component {
   }
   filterCompetitors(currentTournir) {
     return this.props.competitors.filter(competitor =>
-      competitor.tournirsId.find(id => id === currentTournir.id)
+      competitor.tournirsId.find(id => id == currentTournir.id)
     );
   }
   componentWillMount() {
     let currCompetitors = this.filterCompetitors(this.props.activeTournir);
-    /*for (let i = 0; i < 30; i++) currCompetitors.push(currCompetitors[0]);*/
     let level = 0;
     if (currCompetitors.length !== 0)
       level = Math.ceil(Math.log2(Math.ceil(currCompetitors.length / 2)));
@@ -344,6 +340,7 @@ class Rounds extends Component {
       currCompetitors,
       this.props.activeTournir
     );
+    console.log();
     this.setState({
       currentTournir: this.props.activeTournir,
       currentCompetitors: currCompetitors,
@@ -494,3 +491,21 @@ export default connectDecorator(
     competitors: store.competitors
   })
 );
+
+Rounds.propTypes = {
+  tournirs: PropTypes.array.isRequired,
+  competitors: PropTypes.array.isRequired,
+  destroyAllGroups: PropTypes.func.isRequired,
+  addGroup: PropTypes.func.isRequired,
+  destroyGroup: PropTypes.func.isRequired,
+  fixedTournir: PropTypes.func.isRequired,
+  addScore: PropTypes.func.isRequired,
+  destroyScore: PropTypes.func.isRequired,
+  activeTournir: PropTypes.object.isRequired,
+  socket: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
+  changeactiveTournir: PropTypes.func.isRequired
+};
+Rounds.defaultProps = {
+  competitors: []
+};

@@ -41,5 +41,6 @@ const getTime = date => {
 
 module.exports = {
   createUser,
-  createVoice: createVoice
+  createVoice: createVoice,
+  getTime
 };

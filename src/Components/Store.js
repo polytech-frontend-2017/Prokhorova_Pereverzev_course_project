@@ -1,5 +1,4 @@
 export class Store {
-  //private itTournir = 0;
   addListener(handler) {
     this._handlers.push(handler);
   }
@@ -8,8 +7,8 @@ export class Store {
   }
   constructor() {
     this.competition = { title: 'Some title 1', date: null };
-    this.itTournir = 1; //итератор для id турнира (private)
-    this.idCompetitor = 0; //итератор для id соревнующегося (private)
+    this.itTournir = 1;
+    this.idCompetitor = 0;
     this.storeVersion = 0;
     this._handlers = [];
     this.tournirs = [
@@ -100,7 +99,6 @@ export class Store {
   }
   createCompetition(Title, Date) {
     this.competition = { title: Title, date: Date };
-    // { ...this, competition: {Title,Date} } было бы в Redux
     this.emitChange();
   }
   fixedTournir(idTournir) {
@@ -118,14 +116,13 @@ export class Store {
       fixed: false
     });
     this.competitors.map(competitor => {
-      for (let i = 0; i < this.tournirs.length; i++)
-        if (
-          competitor.qiu <= this.tournirs[i].qiuRange.min &&
-          competitor.qiu > this.tournirs[i].qiuRange.max &&
-          competitor.age >= this.tournirs[i].ageRange.min &&
-          competitor.age < this.tournirs[i].ageRange.max
-        )
-          competitor.tournirsId.push(this.tournirs[i].id);
+      if (
+        competitor.qiu <= QiuMin &&
+        competitor.qiu > QiuMax &&
+        competitor.age >= AgeMin &&
+        competitor.age < AgeMax
+      )
+        competitor.tournirsId.push(this.itTournir - 1);
       return true;
     });
 
@@ -133,7 +130,8 @@ export class Store {
     this.emitChange();
   }
   destroyTournir(id) {
-    this.tournirs.splice(id, 1);
+    const index = this.tournirs.findIndex(tournir => tournir.id === id);
+    this.tournirs.splice(index, 1);
     this.emitChange();
   }
   addCompetitor(Name, Surname, Patronomics, Qiu, Age, Mass) {
@@ -141,20 +139,24 @@ export class Store {
       name: Name,
       surname: Surname,
       patronomics: Patronomics,
-      qiu: Qiu,
-      age: Age,
-      mass: Mass,
+      qiu: Number(Qiu),
+      age: Number(Age),
+      mass: Number(Mass),
       id: this.idCompetitor++,
       tournirsId: []
     };
-    for (let i = 0; i < this.tournirs.length; i++)
+    this.tournirs.map(tournir => {
+      console.log(tournir.id + ' проверился!');
       if (
-        Competitor.qiu <= this.tournirs[i].qiuRange.min &&
-        Competitor.qiu > this.tournirs[i].qiuRange.max &&
-        Competitor.age >= this.tournirs[i].ageRange.min &&
-        Competitor.age < this.tournirs[i].ageRange.max
+        Competitor.qiu <= tournir.qiuRange.min &&
+        Competitor.qiu > tournir.qiuRange.max &&
+        Competitor.age >= tournir.ageRange.min &&
+        Competitor.age < tournir.ageRange.max
       )
-        Competitor.tournirsId.push(this.tournirs[i].id);
+        Competitor.tournirsId.push(tournir.id);
+    });
+    console.log(Competitor);
+
     this.competitors.push(Competitor);
     this.emitChange();
   }

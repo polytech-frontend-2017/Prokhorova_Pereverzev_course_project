@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import connectDecorator from '../context/connectDecorator';
 import './CreateCompMenu.css';
 
@@ -69,3 +70,9 @@ export default connectDecorator(
     tournirsCount: store.tournirs.length
   })
 );
+
+CreateCompMenu.propTypes = {
+  tournirsCount: PropTypes.number,
+  createCompetition: PropTypes.func,
+  changeDataCompetition: PropTypes.func
+};

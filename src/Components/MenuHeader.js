@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import logo from '../logoAikido.svg';
 import './MenuHeader.css';
-import connectDecorator from '../context/connectDecorator';
 
 function classNames(conditions) {
-  const classNames = Object.keys(conditions); // ['header-li', 'selected', 'other']
+  const classNames = Object.keys(conditions);
   const enabledClassNames = classNames.filter(
     className => conditions[className]
-  ); // ['header-li', 'other']
-  return enabledClassNames.join(' '); // 'header-li other'
+  );
+  return enabledClassNames.join(' ');
 }
 
-class MenuHeader extends Component {
+export default class MenuHeader extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -74,4 +74,9 @@ class MenuHeader extends Component {
     );
   }
 }
-export default connectDecorator(MenuHeader, [], store => ({}));
+
+MenuHeader.propTypes = {
+  title: PropTypes.string,
+  date: PropTypes.string,
+  changeShow: PropTypes.func
+};

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import connectDecorator from '../context/connectDecorator';
 import './Lists.css';
 
@@ -11,12 +12,18 @@ class ListTournirs extends Component {
       minKiu: '',
       maxKiu: '',
       minMass: '',
-      maxMass: ''
+      maxMass: '',
+      tournirs: this.props.tournirs
     };
     this.textInput = null;
     this.focus = this.focus.bind(this);
     this.handleAddTournir = this.handleAddTournir.bind(this);
     this.handleDestroy = this.handleDestroy.bind(this);
+  }
+  componentWillReceiveProps(newProps) {
+    this.setState({
+      tournirs: newProps.tournirs
+    });
   }
   focus() {
     this.textInput.focus();
@@ -42,7 +49,8 @@ class ListTournirs extends Component {
       minKiu: '',
       maxKiu: '',
       minMass: '',
-      maxMass: ''
+      maxMass: '',
+      tournirs: this.state.tournirs
     });
     if (this.props.activeTournir === null)
       this.props.changeactiveTournir(this.props.tournirs[0]);
@@ -50,8 +58,10 @@ class ListTournirs extends Component {
   }
   handleDestroy(id) {
     this.props.destroyTournir(id);
+    this.setState({ tournirs: this.state.tournirs });
   }
   render() {
+    const { tournirs } = this.state;
     return (
       <div className={'baseDiv'}>
         <form className={'formInput'} onSubmit={this.handleAddTournir}>
@@ -146,7 +156,7 @@ class ListTournirs extends Component {
               <th className={'th-tablse'}>Вес</th>
               <th className={'th-tablse'} />
             </tr>
-            {this.props.tournirs.map((tournir, i) => (
+            {tournirs.map((tournir, i) => (
               <tr className={'tr-table'} key={i}>
                 <td className={'td-table'}>{i}</td>
                 <td className={'td-table'}>
@@ -192,3 +202,11 @@ export default connectDecorator(
     tournirs: store.tournirs
   })
 );
+
+ListTournirs.propTypes = {
+  tournirs: PropTypes.array,
+  activeTournir: PropTypes.object,
+  addTournir: PropTypes.func,
+  destroyTournir: PropTypes.func,
+  changeactiveTournir: PropTypes.func
+};

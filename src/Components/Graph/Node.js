@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import './Node.css';
 
 function getNames(pair) {
@@ -146,3 +147,12 @@ class Node extends Component {
   }
 }
 export default Node;
+Node.propTypes = {
+  width: PropTypes.number,
+  height: PropTypes.number,
+  judgeVoices: PropTypes.object,
+  id: PropTypes.string,
+  showMenu: PropTypes.func,
+  index: PropTypes.number,
+  setActivePairId: PropTypes.func
+};

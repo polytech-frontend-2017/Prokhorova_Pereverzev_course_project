@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import connectDecorator from '../context/connectDecorator';
 import './Lists.css';
 import './ListForms.css';
@@ -12,13 +13,19 @@ class ListCompetitors extends Component {
       patronomics: '',
       age: '',
       qiu: '',
-      mass: ''
+      mass: '',
+      competitors: this.props.competitors
     };
     this.textInput = null;
     this.focus = this.focus.bind(this);
     this.handleAddCompetitor = this.handleAddCompetitor.bind(this);
     this.handleDestroy = this.handleDestroy.bind(this);
     this.changeInput = this.changeInput.bind(this);
+  }
+  componentWillReceiveProps(newProps) {
+    this.setState({
+      competitors: newProps.competitors
+    });
   }
   focus() {
     this.textInput.focus();
@@ -44,14 +51,19 @@ class ListCompetitors extends Component {
       patronomics: '',
       age: '',
       qiu: '',
-      mass: ''
+      mass: '',
+      competitors: this.state.competitors
     });
     this.focus();
   }
   handleDestroy(id) {
     this.props.destroyCompetitor(id);
+    this.setState({
+      competitors: this.state.competitors
+    });
   }
   render() {
+    const { competitors } = this.state;
     return (
       <div className={'baseDiv'}>
         <form className={'formInput'} onSubmit={this.handleAddCompetitor}>
@@ -151,7 +163,7 @@ class ListCompetitors extends Component {
               <th className={'th-tablse'}>Вес</th>
               <th className={'th-tablse'} />
             </tr>
-            {this.props.competitors.map((competitor, i) => (
+            {competitors.map((competitor, i) => (
               <tr className={'tr-table'} key={i}>
                 <td className={'td-table'}>{i}</td>
                 <td className={'td-table'}>{competitor.name}</td>
@@ -195,3 +207,9 @@ export default connectDecorator(
     competitors: store.competitors
   })
 );
+
+ListCompetitors.propTypes = {
+  competitors: PropTypes.array,
+  addCompetitor: PropTypes.func,
+  destroyCompetitor: PropTypes.func
+};
