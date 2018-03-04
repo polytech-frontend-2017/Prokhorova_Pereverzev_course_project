@@ -1,0 +1,71 @@
+html {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: auto;
+  align-items: stretch;
+  justify-content: space-between;
+}
+body,
+#root,
+.router-div,
+.router-div > div,
+.App {
+  overflow-x: hidden;
+  flex: inherit;
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.App-logo {
+  height: 1500px;
+  width: 100px;
+  z-index: 1;
+  opacity: 0.1;
+  margin: auto;
+  display: block;
+}
+.main-container {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-grow: inherit;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.router-div > div {
+  min-height: 100%;
+}
+.login-signin {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--theme-primary-color-gray);
+  margin: var(--theme-primary-margin);
+}
+.tab-group {
+  display: grid;
+  margin: 0;
+  height: 70px;
+  grid-template-columns: repeat(2, 0.5fr);
+  padding: var(--theme-primary-color-btn-disabled);
+}
+.login-signup-li {
+  list-style-type: none;
+  background-color: var(--theme-primary-color-gray);
+  padding: var(--theme-primary-color-btn-disabled);
+  text-align: center;
+}
+.active-li {
+  background-color: #c22b2a;
+}
+.login-signup-a {
+  padding: var(--theme-primary-padding);
+  text-decoration: none;
+  color: white;
+  transition: 0.5s ease;
+  display: inline-block;
+  text-transform: uppercase;
+  font-size: var(--theme-primary-font-header-size);
+  font-family: var(--theme-primary-font-family);
+}

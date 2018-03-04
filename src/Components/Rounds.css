@@ -1,0 +1,92 @@
+.container-rounds {
+  width: 100%;
+  padding: var(--theme-primary-padding);
+}
+.competitors-table-rounds {
+  padding: var(--theme-primary-padding);
+}
+.container-rounds-list {
+  width: 100%;
+  grid-column: 1;
+  background: #fff;
+  flex-direction: column;
+  display: flex;
+  justify-content: flex-start;
+  overflow: scroll;
+  overflow-x: hidden;
+}
+.list-competitor {
+  float: left;
+  width: 100%;
+  text-align: left;
+  padding-top: var(--theme-primary-padding);
+  padding-bottom: var(--theme-primary-padding);
+  background: #fff;
+  display: inline-block;
+}
+.list-competitor-rounds {
+  padding: 10px 10px;
+  float: left;
+}
+.rounds-main {
+  display: grid;
+  grid-template-columns: [linename0] minmax(300px, 300px) [linename2] 100%;
+  grid-template-rows: 100%;
+  width: 100%;
+}
+.Graph {
+  grid-column: 2;
+  float: left;
+  display: inline-block;
+}
+.inner-graph {
+  z-index: 1;
+  overflow: scroll;
+  width: 100%;
+}
+.btns-div-rounds {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  padding: var(--theme-primary-padding);
+  transform: translateX(-50%);
+}
+.btn-rounds {
+  padding: var(--theme-primary-padding) 10px;
+  font-size: 12pt;
+  margin: 5px 15px;
+  width: 160px;
+  height: 80px;
+  border: none;
+  color: white;
+  cursor: pointer;
+  border-radius: var(--theme-primary-border-radius-btn-rounds);
+}
+.startBtn {
+  background-color: var(--theme-green-btn-primary-color);
+}
+.stopBtn {
+  background-color: var(--theme-primary-color);
+}
+.fixed {
+  background-color: var(--theme-primary-color);
+}
+.not-fixed {
+  background-color: var(--theme-green-btn-primary-color);
+}
+
+.startBtn:hover {
+  background-color: var(--theme-green-btn-primary-hover);
+}
+.stopBtn:hover {
+  background-color: var(--theme-primary-color-btn-hover);
+}
+.fixed:hover {
+  background-color: var(--theme-primary-color-btn-hover);
+}
+.not-fixed:hover {
+  background-color: var(--theme-green-btn-primary-hover);
+}
+.startBtn:disabled {
+  background-color: var(--theme-primary-color-btn-disabled);
+}
